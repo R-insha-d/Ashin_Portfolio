@@ -1,26 +1,405 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================== Variants ============================== */
+/* stby: motion paused (Rec chip in Standby, or OS reduced motion with no stored choice).
+   Second branch: visitors without JS who prefer reduced motion (no data-motion attribute). */
+@custom-variant stby {
+  &:where([data-motion="paused"], [data-motion="paused"] *) {
+    @slot;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &:where(:root:not([data-motion]), :root:not([data-motion]) *) {
+      @slot;
+    }
+  }
+}
+/* save-data: the browser asked for reduced data (set by the boot script). */
+@custom-variant save-data (&:where([data-save-data="true"], [data-save-data="true"] *));
+
+/* ============================== Tokens ============================== */
+@theme {
+  /* Colour. Tailwind's palette is removed: only these exist. */
+  --color-*: initial;
+  --color-void: #0b0b0c;        /* page background */
+  --color-panel: #131315;       /* panels, monitors, cards */
+  --color-track: #1a1a1d;       /* timeline lanes, tags */
+  --color-raised: #232327;      /* clip bodies, hover rows (never ash text, never edge borders) */
+  --color-hairline: #2a2a2f;    /* decorative dividers */
+  --color-rule: #3a3a40;        /* ruler ticks, panel borders (decorative) */
+  --color-edge: #6b6862;        /* borders that identify controls (void/panel/track only) */
+  --color-paper: #f3efe7;       /* primary text */
+  --color-smoke: #bdb8ae;       /* secondary text */
+  --color-ash: #8e8a82;         /* mono labels: void/panel/track only */
+  --color-amber: #ffb547;       /* the one accent */
+  --color-amber-hi: #ffc66e;    /* primary hover */
+  --color-amber-wash: rgb(255 181 71 / 0.14); /* selected clip, marker band */
+  --color-rec: #ff453a;         /* Rec dot only, never text */
+  --color-focus: #7cc4ff;       /* focus ring only */
+  --color-v1: #4fc1b5;          /* 2px clip label strips only */
+  --color-v2: #9b8cff;
+  --color-a1: #8bbf7a;
+
+  /* Type scale: fluid from 360px to 1440px viewports. */
+  --text-*: initial;
+  --text-name: clamp(2.75rem, 17cqi, 9.5rem);       /* H1 name; one line; needs an @container ancestor */
+  --text-name--line-height: 0.86;
+  --text-name--letter-spacing: -0.025em;
+  --text-name--font-weight: 800;
+  --text-display: clamp(2.25rem, 1rem + 5.5556vw, 6rem);   /* 36→96 H2 display line */
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.02em;
+  --text-display--font-weight: 700;
+  --text-feature: clamp(1.75rem, 1.1667rem + 2.5926vw, 3.5rem); /* 28→56 */
+  --text-feature--line-height: 1;
+  --text-feature--letter-spacing: -0.015em;
+  --text-feature--font-weight: 650;
+  --text-h3: clamp(1.375rem, 1.2083rem + 0.7407vw, 1.875rem);   /* 22→30 */
+  --text-h3--line-height: 1.15;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h3--font-weight: 650;
+  --text-title: clamp(1.25rem, 1.0833rem + 0.7407vw, 1.75rem);  /* 20→28 */
+  --text-title--line-height: 1.15;
+  --text-title--font-weight: 600;
+  --text-lead: clamp(1.125rem, 1.0417rem + 0.3704vw, 1.375rem); /* 18→22 */
+  --text-lead--line-height: 1.5;
+  --text-lead--font-weight: 400;
+  --text-body: clamp(1rem, 0.9792rem + 0.0926vw, 1.0625rem);    /* 16→17 */
+  --text-body--line-height: 1.6;
+  --text-small: clamp(0.875rem, 0.8542rem + 0.0926vw, 0.9375rem); /* 14→15 */
+  --text-small--line-height: 1.5;
+  --text-label: 0.75rem;                                         /* 12 mono caps */
+  --text-label--line-height: 1.4;
+  --text-label--letter-spacing: 0.08em;
+  --text-label--font-weight: 500;
+  --text-tc: clamp(0.8125rem, 0.7708rem + 0.1852vw, 0.9375rem);  /* 13→15 timecode */
+  --text-tc--line-height: 1;
+  --text-tc--letter-spacing: 0.04em;
+  --text-tc--font-weight: 500;
+  --text-micro: 0.6875rem;                                       /* 11 chrome only */
+  --text-micro--line-height: 1.2;
+  --text-micro--letter-spacing: 0.1em;
+  --text-micro--font-weight: 500;
+
+  --breakpoint-*: initial;
+  --breakpoint-xs: 23.75rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
+  --breakpoint-3xl: 120rem;
+
+  --container-page: 90rem;
+  --container-wide: 100rem;
+  --container-measure: 62ch;
+  --container-lead: 44ch;
+
+  --radius-*: initial;
+  --radius-clip: 2px;
+  --radius-button: 6px;
+  --radius-panel: 10px;
+  --radius-pill: 999px;
+
+  --shadow-*: initial;
+  --shadow-panel: inset 0 1px 0 rgb(243 239 231 / 0.04), 0 24px 60px -30px rgb(0 0 0 / 0.8);
+  --shadow-glow-amber: 0 0 0 1px rgb(255 181 71 / 0.35), 0 0 24px rgb(255 181 71 / 0.22);
+  --shadow-glow-rec: 0 0 10px rgb(255 69 58 / 0.65);
+
+  --z-index-grain: 0;
+  --z-index-base: 1;
+  --z-index-raised: 2;
+  --z-index-overlay: 5;
+  --z-index-header: 40;
+  --z-index-skip: 60;
+
+  --ease-*: initial;
+  --ease-wipe: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-rise: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-trim: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-sweep: cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-clap: cubic-bezier(0.55, 0, 1, 0.45);
+
+  --transition-duration-frame: 40ms;      /* one frame at 25p */
+  --transition-duration-quick: 150ms;
+  --transition-duration-hover: 250ms;
+  --transition-duration-rise: 600ms;
+  --transition-duration-dissolve: 600ms;
+  --transition-duration-wipe: 700ms;
+  --transition-duration-trim: 800ms;
+  --transition-duration-sweep: 1600ms;
+  --default-transition-duration: 250ms;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --animate-*: initial;
+  --animate-blink: blink 1s steps(1, end) infinite;
+  --animate-pulse-soft: pulse-soft 1.6s ease-in-out infinite;
+  --animate-clap: clap 320ms cubic-bezier(0.55, 0, 1, 0.45) 200ms both;
+  --animate-scan: scan 1.6s linear infinite;
+
+  @keyframes blink { 0%, 49.99% { opacity: 1; } 50%, 100% { opacity: 0.25; } }
+  @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+  @keyframes clap { from { transform: rotate(-8deg); } to { transform: rotate(0deg); } }
+  @keyframes scan { from { transform: translateY(-100%); } to { transform: translateY(100%); } }
 }
 
+/* next/font variables live on <html>; expose them inline (per the Next docs). */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-malayalam: "Noto Sans Malayalam", "Nirmala UI", "Malayalam Sangam MN", Kartika, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
+/* ============================== Root custom properties ============================== */
+:root {
+  color-scheme: dark;
+  --header-h: 3.5rem;
+  --scroll-offset: calc(var(--header-h) + 1rem);
+  --gutter: clamp(1rem, 0.3333rem + 2.963vw, 3rem);
+  --section-y: clamp(3.5rem, 2.5rem + 4.4444vw, 6.5rem);
+  --stack: clamp(2rem, 1.5rem + 2.2222vw, 3.5rem);
+  --grain-opacity: 0.05;
+  --grain-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --bracket-color: var(--color-amber);
+  --bracket-len: 10px;
+  --bracket-width: 1px;
+}
+
+/* prefers-contrast: more → ash becomes smoke, decorative lines become edge, grain off. */
+@media (prefers-contrast: more) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-ash: #bdb8ae;
+    --color-hairline: #6b6862;
+    --color-rule: #6b6862;
+    --grain-opacity: 0;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================== Base ============================== */
+@layer base {
+  html {
+    scroll-padding-top: var(--scroll-offset);
+    background-color: var(--color-void);
+    scrollbar-color: var(--color-rule) var(--color-void);
+    /* Reserve the scrollbar's space even while scrolling is locked (preloader, menu dialog),
+       so the page never jumps sideways when the lock is released. */
+    scrollbar-gutter: stable;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  html:not([data-motion="paused"]) { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html:not([data-motion="on"]) { scroll-behavior: auto; }
+  }
+  html:has(dialog[open]) { overflow: hidden; }
+
+  body {
+    min-height: 100svh;
+    background-color: var(--color-void);
+    color: var(--color-paper);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.6;
+    overflow-x: clip;                 /* safety net only; QA checks overflow with it disabled */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body > main, body > footer { position: relative; z-index: 1; }
+
+  :lang(ml) { font-family: var(--font-malayalam); }
+
+  :focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  [tabindex="-1"]:focus { outline: none; }
+  h1[tabindex="-1"]:focus-visible,
+  h2[tabindex="-1"]:focus-visible { outline: 2px dashed var(--color-focus); outline-offset: 8px; }
+
+  ::selection { background-color: var(--color-amber); color: var(--color-void); }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--color-void); }
+  ::-webkit-scrollbar-thumb { background: var(--color-rule); border: 2px solid var(--color-void); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-edge); }
+}
+
+/* ============================== Grain (beneath content) ============================== */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -160px;                      /* one tile beyond the viewport */
+  z-index: 0;
+  pointer-events: none;
+  background-image: var(--grain-tile);
+  background-size: 160px 160px;
+  opacity: var(--grain-opacity);
+  animation: grain-jitter 750ms steps(1, end) infinite;   /* 6 offsets at 8 fps */
+}
+@keyframes grain-jitter {
+  0%      { transform: translate3d(0, 0, 0); }
+  16.66%  { transform: translate3d(-40px, 24px, 0); }
+  33.33%  { transform: translate3d(32px, -56px, 0); }
+  50%     { transform: translate3d(-64px, -16px, 0); }
+  66.66%  { transform: translate3d(48px, 40px, 0); }
+  83.33%  { transform: translate3d(-16px, 64px, 0); }
+  100%    { transform: translate3d(0, 0, 0); }
+}
+@media (pointer: coarse) { body::before { animation: none; } }
+:root[data-motion="paused"] body::before,
+:root[data-save-data="true"] body::before { animation: none; }
+@media (prefers-reduced-motion: reduce) { :root:not([data-motion="on"]) body::before { animation: none; } }
+@media (prefers-contrast: more), (forced-colors: active) { body::before { display: none; } }
+
+/* ============================== Motion kill switch ============================== */
+/* Stops every CSS animation/transition when paused (motion's WAAPI animations are handled by MotionConfig). */
+:root[data-motion="paused"] *,
+:root[data-motion="paused"] *::before,
+:root[data-motion="paused"] *::after {
+  animation-duration: 1ms !important;
+  animation-delay: 0ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+  transition-delay: 0ms !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion]) *,
+  :root:not([data-motion]) *::before,
+  :root:not([data-motion]) *::after {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* ============================== Utilities ============================== */
+@utility wdth-* { font-variation-settings: "wdth" --value(integer); }   /* Archivo width axis 62–125 */
+
+@utility label-caps {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+@utility micro-caps {
+  font-family: var(--font-mono);
+  font-size: var(--text-micro);
+  line-height: 1.2;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+@utility tc {
+  font-family: var(--font-mono);
+  font-size: var(--text-tc);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums slashed-zero;
+}
+@utility tc-fixed { display: inline-block; width: 7.1em; white-space: nowrap; }   /* 11 mono chars incl. tracking */
+
+/* The "cut": emphasised word in display lines (condensed, lighter, amber). */
+@utility cut {
+  font-variation-settings: "wdth" 62;
+  font-weight: 400;
+  color: var(--color-amber);
+  letter-spacing: -0.01em;
+}
+
+@utility link-wipe {
+  background-image: linear-gradient(var(--color-amber), var(--color-amber));
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  transition: background-size 250ms var(--ease-standard);
+  &:hover, &:focus-visible { background-size: 100% 1px; }
+}
+
+/* Amber corner brackets on an overlay element (use on an aria-hidden absolute inset-0 span). */
+@utility corner-brackets {
+  --_c: var(--bracket-color);
+  --_l: var(--bracket-len);
+  --_w: var(--bracket-width);
+  background:
+    linear-gradient(var(--_c) 0 0) left top / var(--_l) var(--_w) no-repeat,
+    linear-gradient(var(--_c) 0 0) left top / var(--_w) var(--_l) no-repeat,
+    linear-gradient(var(--_c) 0 0) right top / var(--_l) var(--_w) no-repeat,
+    linear-gradient(var(--_c) 0 0) right top / var(--_w) var(--_l) no-repeat,
+    linear-gradient(var(--_c) 0 0) left bottom / var(--_l) var(--_w) no-repeat,
+    linear-gradient(var(--_c) 0 0) left bottom / var(--_w) var(--_l) no-repeat,
+    linear-gradient(var(--_c) 0 0) right bottom / var(--_l) var(--_w) no-repeat,
+    linear-gradient(var(--_c) 0 0) right bottom / var(--_w) var(--_l) no-repeat;
+}
+
+@utility grain-layer {
+  background-image: var(--grain-tile);
+  background-size: 160px 160px;
+  opacity: calc(var(--grain-opacity) * 1.2);
+  pointer-events: none;
+}
+@utility vignette {
+  background-image: radial-gradient(120% 90% at 50% 45%, transparent 55%, rgb(0 0 0 / 0.55));
+  pointer-events: none;
+}
+/* Desaturated EBU colour bars (PAL), left to right. */
+@utility ebu-bars {
+  background-image: linear-gradient(90deg,
+    #5a5a5a 0 12.5%, #5a5228 12.5% 25%, #284f55 25% 37.5%, #2c5230 37.5% 50%,
+    #52304f 50% 62.5%, #55302c 62.5% 75%, #2c3358 75% 87.5%, #0a0a0b 87.5% 100%);
+}
+@utility clapper-band {
+  background-image: repeating-linear-gradient(-45deg, var(--color-amber) 0 8px, var(--color-void) 8px 16px);
+}
+@utility ruler-ticks {
+  background-image: repeating-linear-gradient(to right, var(--color-rule) 0 1px, transparent 1px var(--tick-gap, 12px));
+  background-size: 100% 6px;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+}
+@utility page-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 1rem;
+  @variant sm { grid-template-columns: repeat(8, minmax(0, 1fr)); column-gap: 1.25rem; }
+  @variant lg { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 1.5rem; }
+}
+
+/* ============================== Scroll-driven (progressive enhancement) ============================== */
+@layer components {
+  .cut-line { transform-origin: var(--cut-origin, 50% 50%); }
+}
+@supports (animation-timeline: view()) {
+  :root:not([data-motion="paused"]) .cut-line {
+    animation: cut-line-draw linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 35%;
+  }
+  :root:not([data-motion="paused"]) .credits-row {
+    animation: credits-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 90%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :root:not([data-motion]) .cut-line,
+    :root:not([data-motion]) .credits-row { animation: none; }
+  }
+}
+@keyframes cut-line-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes credits-in { from { opacity: 0; transform: translateY(1.5rem); } to { opacity: 1; transform: none; } }
+
+/* ============================== Forced colours and print ============================== */
+@media (forced-colors: active) {
+  .grain-layer, .vignette, .clapper-band { display: none; }
+  :focus-visible { outline-color: Highlight; }
+}
+@media print {
+  :root {
+    --color-void: #ffffff; --color-panel: #ffffff; --color-track: #f2f2f2; --color-raised: #eeeeee;
+    --color-paper: #111111; --color-smoke: #333333; --color-ash: #555555; --color-amber: #7a4f00;
+    --color-hairline: #cccccc; --color-rule: #bbbbbb;
+  }
+  body::before, [data-print="hide"] { display: none !important; }
+  body > header { position: static !important; }
 }

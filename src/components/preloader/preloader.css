@@ -1,0 +1,354 @@
+/*
+ * Preloader: "Leader → Cut".
+ * A film-leader countdown (3, 2, 1) in a projector gate, a 2-pop flash, a name card, then the
+ * screen splits into slats that fly apart to reveal the site. GSAP drives the timeline
+ * (preloader.tsx); this file is the static frame, which is visible from the very first paint.
+ * Shown only while html[data-preloader] is set by the boot script (never when motion is paused).
+ */
+
+.pl {
+  --pl-void: var(--color-void, #0b0b0c);
+  --pl-paper: var(--color-paper, #f3efe7);
+  --pl-ash: var(--color-ash, #8e8a82);
+  --pl-amber: var(--color-amber, #ffb547);
+  --pl-rec: var(--color-rec, #ff453a);
+  --pl-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --pl-mono: var(--font-jetbrains-mono), ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  overflow: hidden;
+  color: var(--pl-paper);
+  font-family: var(--pl-mono);
+  cursor: progress;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+html[data-preloader] .pl { display: block; }
+html[data-preloader],
+html[data-preloader] body { overflow: hidden; }
+/* While the intro plays, the page behind it is not painted, focusable or exposed to assistive
+   tech (CSS only, so it holds from first paint and never touches React-managed attributes).
+   The timeline sets data-preloader-reveal at the cut, just before the slats open. */
+html[data-preloader]:not([data-preloader-reveal]) body > :not(.pl):not(#announcer) { visibility: hidden; }
+
+/* ── Slats: the black background, cut into bands that fly apart on exit ───────────── */
+.pl-slats { position: absolute; inset: 0; }
+.pl-slat {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--i) * 100% / var(--n));
+  height: calc(100% / var(--n) + 1px);           /* 1px overlap hides seams */
+  background: var(--pl-void);
+  will-change: transform;
+}
+.pl-slat::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--pl-amber);
+  box-shadow: 0 0 18px 3px rgb(255 181 71 / 0.5);
+  opacity: var(--edge, 0);
+}
+.pl-slat:nth-child(odd)::after { right: 0; }   /* odd slats leave to the left: trailing edge glows */
+.pl-slat:nth-child(even)::after { left: 0; }
+
+/* ── Stage: everything drawn on top of the slats ─────────────────────────────────── */
+.pl-stage { position: absolute; inset: 0; will-change: transform, opacity; }
+
+/* Screen-reader status while the visual intro plays (everything else is aria-hidden or inert). */
+.pl-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.pl-grain {
+  position: absolute;
+  inset: -160px;
+  background-image: var(--grain-tile);
+  background-size: 160px 160px;
+  opacity: 0.14;
+  animation: grain-jitter 750ms steps(1, end) infinite;
+  pointer-events: none;
+}
+.pl-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 75% at 50% 50%, transparent 45%, rgb(0 0 0 / 0.72) 100%);
+  pointer-events: none;
+}
+/* Light leak: soft gradients only (no blur filter, no blend mode), so moving it stays on the compositor. */
+.pl-leak {
+  position: absolute;
+  inset: -25%;
+  background:
+    radial-gradient(40% 36% at 80% 22%, rgb(255 138 46 / 0.32), rgb(255 138 46 / 0.12) 45%, transparent 75%),
+    radial-gradient(34% 38% at 16% 82%, rgb(255 69 58 / 0.2), rgb(255 69 58 / 0.07) 45%, transparent 75%);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Film-strip sprockets racing down both edges (GSAP accelerates --sy like a projector spinning up). */
+.pl-sprockets {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  border-inline: 1px solid rgb(243 239 231 / 0.07);
+  background-image: linear-gradient(to bottom, rgb(243 239 231 / 0.12) 0 15px, transparent 15px 30px);
+  background-size: 12px 30px;
+  background-repeat: repeat-y;
+  background-position: center var(--sy, 0px);
+  -webkit-mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(transparent, #000 14%, #000 86%, transparent);
+  animation: pl-fade 500ms 120ms ease-out both;
+}
+.pl-sprockets--l { left: max(14px, 2.4vw); }
+.pl-sprockets--r { right: max(14px, 2.4vw); }
+
+/* ── Gate: the projector frame, powered on like a monitor (pure CSS, runs before JS) ─ */
+.pl-frame { position: absolute; inset: 0; display: grid; place-items: center; }
+.pl-gate {
+  position: relative;
+  width: min(80vw, calc(64vh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  container-type: size;
+  animation: pl-power 700ms cubic-bezier(0.77, 0, 0.175, 1) both;
+  will-change: transform, opacity;
+}
+@media (orientation: portrait) {
+  .pl-gate { width: min(84vw, calc(60vh * 4 / 5)); aspect-ratio: 4 / 5; }
+}
+@keyframes pl-power {
+  0%   { clip-path: inset(49.7% 50% 49.7% 50%); filter: brightness(5); }
+  42%  { clip-path: inset(49.7% 0% 49.7% 0%); filter: brightness(3.2); }
+  100% { clip-path: inset(0% 0% 0% 0%); filter: brightness(1); }
+}
+.pl-gate-inner {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(243 239 231 / 0.09);
+  background: radial-gradient(110% 95% at 50% 45%, #1b1b1f 0%, #101012 58%, var(--pl-void) 100%);
+  will-change: transform;            /* the gate weave moves it every frame */
+}
+.pl-scan {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.028) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+}
+.pl-cross { position: absolute; inset: 0; pointer-events: none; }
+.pl-cross::before,
+.pl-cross::after { content: ''; position: absolute; background: rgb(243 239 231 / 0.11); }
+.pl-cross::before { left: 0; right: 0; top: 50%; height: 1px; }
+.pl-cross::after { top: 0; bottom: 0; left: 50%; width: 1px; }
+
+.pl-corner { position: absolute; width: 18px; height: 18px; border: 0 solid var(--pl-amber); z-index: 2; }
+.pl-corner--tl { top: 10px; left: 10px; border-top-width: 2px; border-left-width: 2px; }
+.pl-corner--tr { top: 10px; right: 10px; border-top-width: 2px; border-right-width: 2px; }
+.pl-corner--bl { bottom: 10px; left: 10px; border-bottom-width: 2px; border-left-width: 2px; }
+.pl-corner--br { bottom: 10px; right: 10px; border-bottom-width: 2px; border-right-width: 2px; }
+
+/* ── Leader: rings, sweep hand and the countdown numbers ─────────────────────────── */
+.pl-leader {
+  position: relative;
+  width: min(78cqh, 66cqw);
+  aspect-ratio: 1;
+  container-type: size;
+  grid-area: 1 / 1;
+}
+.pl-rings { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.pl-rings circle { fill: none; stroke: rgb(243 239 231 / 0.3); vector-effect: non-scaling-stroke; }
+.pl-rings .pl-ticks { stroke: rgb(243 239 231 / 0.24); stroke-width: 2.2; vector-effect: none; }
+.pl-counts { position: absolute; inset: 0; }
+.pl-sweep {
+  position: absolute;
+  inset: 4%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgb(255 181 71 / 0.07) 0deg,
+    rgb(255 181 71 / 0.24) var(--sweep, 0deg),
+    transparent var(--sweep, 0deg)
+  );
+}
+.pl-hand {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  width: 2px;
+  height: 46%;
+  margin-left: -1px;
+  transform-origin: 50% 100%;
+  rotate: var(--sweep, 0deg);
+  background: linear-gradient(to top, rgb(255 181 71 / 0), var(--pl-amber));
+  box-shadow: 0 0 14px rgb(255 181 71 / 0.85);
+}
+.pl-num {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding-top: 4%;
+  font-family: var(--pl-sans);
+  font-weight: 800;
+  font-size: 62cqh;
+  line-height: 1;
+  font-variation-settings: 'wdth' 100;
+  color: var(--pl-paper);
+  text-shadow:
+    calc(var(--ab, 0.015) * -1em) 0 rgb(255 69 58 / 0.7),
+    calc(var(--ab, 0.015) * 1em) 0 rgb(79 193 181 / 0.65);
+  opacity: 0;
+  will-change: transform, opacity, filter;
+}
+.pl-num:first-child { opacity: 1; }
+
+/* ── Name card (the first frame of the program) ──────────────────────────────────── */
+.pl-card {
+  grid-area: 1 / 1;
+  display: grid;
+  justify-items: center;
+  gap: 2.4cqh;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  will-change: transform;
+}
+.pl-take { font-size: clamp(9px, 2cqh, 12px); letter-spacing: 0.34em; text-transform: uppercase; color: var(--pl-ash); }
+.pl-name {
+  overflow: hidden;
+  padding: 0.04em 0.03em 0.07em;
+  font-family: var(--pl-sans);
+  font-weight: 800;
+  font-size: min(14.5cqw, 25cqh);
+  line-height: 0.92;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--pl-paper);
+  text-shadow:
+    calc(var(--ab, 0) * -1em) 0 rgb(255 69 58 / 0.75),
+    calc(var(--ab, 0) * 1em) 0 rgb(79 193 181 / 0.7);
+}
+.pl-ch { display: inline-block; font-variation-settings: 'wdth' var(--w, 125); will-change: transform; }
+.pl-sp { display: inline-block; width: 0.26em; }
+.pl-role {
+  font-size: clamp(10px, 2.6cqh, 16px);
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--pl-amber);
+  clip-path: inset(0% 100% 0% 0%);
+}
+
+.pl-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; z-index: 3; }
+
+/* Short cut (repeat load in the same tab): no countdown; the name card is the very first frame. */
+html[data-preloader='short'] .pl-leader { visibility: hidden; }
+html[data-preloader='short'] .pl-card { opacity: 1; visibility: visible; }
+html[data-preloader='short'] .pl-role { clip-path: none; }
+
+/* ── HUD: rec light, sequence, timecode, timeline playhead and load meter ────────── */
+.pl-hud {
+  position: absolute;
+  left: max(64px, 6vw);
+  right: max(64px, 6vw);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pl-ash);
+  animation: pl-rise 600ms 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.pl-hud--top { top: max(20px, 3.4vh); justify-content: space-between; }
+.pl-hud--bottom { bottom: max(20px, 3.4vh); }
+.pl-hud-group { display: inline-flex; align-items: center; gap: 18px; }
+.pl-rec { display: inline-flex; align-items: center; gap: 8px; color: var(--pl-paper); }
+.pl-rec-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--pl-rec);
+  box-shadow: 0 0 10px rgb(255 69 58 / 0.85);
+  animation: pl-blink 1s steps(1, end) infinite;
+}
+.pl-tc { color: var(--pl-paper); font-size: 13px; letter-spacing: 0.06em; font-variant-numeric: tabular-nums; }
+.pl-track { position: relative; flex: 1; height: 18px; min-width: 80px; }
+.pl-track::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 7px;
+  background: linear-gradient(to right, rgb(243 239 231 / 0.24) 0 1px, transparent 1px) 0 0 / 5% 100% repeat-x;
+}
+.pl-track::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgb(243 239 231 / 0.2); }
+.pl-fill {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--pl-amber);
+  box-shadow: 0 0 10px rgb(255 181 71 / 0.6);
+  transform-origin: 0 50%;
+  transform: scaleX(var(--p, 0));
+  z-index: 1;
+}
+.pl-head {
+  position: absolute;
+  bottom: 0;
+  left: calc(var(--p, 0) * 100%);
+  width: 2px;
+  height: 18px;
+  margin-left: -1px;
+  background: var(--pl-amber);
+  z-index: 1;
+}
+.pl-head::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  margin-left: -5px;
+  border: 5px solid transparent;
+  border-top-color: var(--pl-amber);
+}
+.pl-pct { color: var(--pl-paper); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pl-pct-label { color: var(--pl-ash); margin-right: 10px; }
+
+@media (max-width: 640px) {
+  .pl-sprockets { width: 20px; background-size: 9px 26px; background-image: linear-gradient(to bottom, rgb(243 239 231 / 0.12) 0 13px, transparent 13px 26px); }
+  .pl-sprockets--l { left: 8px; }
+  .pl-sprockets--r { right: 8px; }
+  .pl-hud { left: 40px; right: 40px; gap: 12px; font-size: 10px; letter-spacing: 0.14em; }
+  .pl-hide-sm { display: none; }
+  .pl-hud--bottom { flex-wrap: wrap; row-gap: 10px; justify-content: space-between; }
+  .pl-track { order: 3; flex-basis: 100%; }
+}
+
+@keyframes pl-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes pl-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pl-blink { 0%, 49.99% { opacity: 1; } 50%, 100% { opacity: 0.2; } }
+
+@media (forced-colors: active) {
+  .pl-grain, .pl-leak, .pl-scan, .pl-sprockets { display: none; }
+}

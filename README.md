@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ashin N — portfolio
 
-## Getting Started
+One-page portfolio for Ashin N, Video Editor & 3D Artist (Kannur, Kerala). Dark "editing suite" look with an interactive 3D film reel in the hero, an editing-timeline view of experience, and Lenis smooth scrolling.
 
-First, run the development server:
+Built with Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, motion, three.js and Lenis.
+
+## Run it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Production build:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Edit the content
 
-## Learn More
+All text, contact details, roles and education live in one file: `src/content/profile.ts`.
 
-To learn more about Next.js, take a look at the following resources:
+**Add the profile photo**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Put the photo in `public/images/`, for example `public/images/ashin-portrait.jpg`.
+2. In `src/content/profile.ts`, replace `photo: null` with:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   ```ts
+   photo: { src: '/images/ashin-portrait.jpg', alt: 'Portrait of Ashin N', focus: '50% 30%' },
+   ```
 
-## Deploy on Vercel
+Until a photo file exists, the About section shows a colour-bars placeholder.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Showreel and work samples**: fill `showreel` and `projects` in the same file. The Work section, its nav link and the hero's showreel button appear only once they have content.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy
+
+Deploys as-is to Vercel or any Node host. Set `NEXT_PUBLIC_SITE_URL` (for example `https://ashin.example.com`) so the sitemap, canonical URL and social share image use the real domain.
+
+## Notes
+
+- Smooth scrolling (Lenis) and animations switch off for visitors who prefer reduced motion, and when the header's REC / Standby toggle is set to Standby.
+- The 3D reel loads after the page is idle on desktop, or on first interaction on touch devices. It falls back to a drawn poster when WebGL is unavailable or the device is too slow.
+- The site never shows Ashin's street address; contact is email, phone / WhatsApp and LinkedIn.

@@ -1,15 +1,17 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  poweredByHeader: false,
+  images: {
+    qualities: [75],
+    formats: ['image/avif', 'image/webp'],
+    localPatterns: [{ pathname: '/images/**', search: '' }],
+  },
   turbopack: {
     rules: {
-      "*.css": {
-        loaders: ["@tailwindcss/turbopack"],
-        as: "*.css",
-      },
+      '*.css': { loaders: ['@tailwindcss/turbopack'], as: '*.css' },
     },
   },
 };

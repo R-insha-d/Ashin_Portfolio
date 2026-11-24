@@ -8,12 +8,17 @@ import { useMotionPaused } from '@/lib/motion-pref';
 
 type ServiceCardProps = {
   id: ServiceId;
+  /** Position in the list (0-based): offsets this card's reveal cascade. */
+  order: number;
   index: string;
   title: string;
   body: string;
   toolsLabel: string;
   tools: string;
 };
+
+/** A waveform, used for any service added in portfolio.json without its own glyph. */
+const DEFAULT_GLYPH: readonly string[] = ['M4 28H108', 'M14 20V36', 'M26 12V44', 'M38 22V34', 'M50 8V48', 'M62 18V38', 'M74 14V42', 'M86 24V32', 'M98 18V38'];
 
 /** Scope glyph paths per service (112x56 viewBox). Decorative only. */
 const GLYPHS: Record<ServiceId, readonly string[]> = {
@@ -62,7 +67,10 @@ const DRAW: Variants = {
   shown: { pathLength: 1, opacity: 1, transition: { duration: 0.8, ease: EASE.trim } },
 };
 
-export function ServiceCard({ id, index, title, body, toolsLabel, tools }: ServiceCardProps) {
+export function ServiceCard({ id, order, index, title, body, toolsLabel, tools }: ServiceCardProps) {
+  // Scroll reveal: these members join the card's group (its <li>) in DOM order, 90 ms apart,
+  // offset by the card's place in the row.
+  const d = order * 110;
   const ref = useRef<HTMLElement>(null);
   const armed = useRef(false);
   const controls = useAnimationControls();
@@ -112,7 +120,7 @@ export function ServiceCard({ id, index, title, body, toolsLabel, tools }: Servi
         className="corner-brackets pointer-events-none absolute inset-0 rounded-panel opacity-0 transition-opacity duration-hover ease-standard group-hover/card:opacity-100 group-focus-within/card:opacity-100"
       />
       <div className="flex items-start justify-between gap-4">
-        <span aria-hidden="true" className="micro-caps text-ash">
+        <span aria-hidden="true" data-rv="fade" data-rv-delay={d} className="micro-caps text-ash">
           {index}
         </span>
         <m.svg
@@ -126,7 +134,7 @@ export function ServiceCard({ id, index, title, body, toolsLabel, tools }: Servi
           initial={false}
           animate={controls}
         >
-          {GLYPHS[id].map((d) => (
+          {(GLYPHS[id] ?? DEFAULT_GLYPH).map((d) => (
             <m.path
               key={d}
               d={d}
@@ -139,15 +147,20 @@ export function ServiceCard({ id, index, title, body, toolsLabel, tools }: Servi
           ))}
         </m.svg>
       </div>
-      <h3 id={titleId} className="wdth-110 text-h3 text-paper">
+      <h3 id={titleId} data-rv="mask" data-rv-delay={d} className="wdth-110 text-h3 text-paper">
         {title}
       </h3>
-      <p className="text-body text-smoke">{body}</p>
-      <p className="mt-auto flex flex-col gap-1 border-t border-hairline pt-4">
-        <span className="label-caps text-ash">{toolsLabel}</span>
-        <span className="sr-only">: </span>
-        <span className="text-small text-paper">{tools}</span>
+      <p data-rv="focus" data-rv-delay={d} className="text-body text-smoke">
+        {body}
       </p>
+      <div className="mt-auto">
+        <span aria-hidden="true" data-rv="draw" data-rv-delay={d} className="block h-px bg-hairline" />
+        <p data-rv="rise" data-rv-delay={d} className="flex flex-col gap-1 pt-4">
+          <span className="label-caps text-ash">{toolsLabel}</span>
+          <span className="sr-only">: </span>
+          <span className="text-small text-paper">{tools}</span>
+        </p>
+      </div>
     </article>
   );
 }

@@ -12,9 +12,12 @@ export function Services() {
       <SectionHeading id="services" eyebrow={c.eyebrow} display={c.display} intro={c.intro} />
       <ul className="mt-(--stack) grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         {profile.services.map((s, i) => (
-          <li key={s.id} className="flex">
+          // Scroll reveal: each card is its own group (phones play each card as it scrolls in);
+          // side by side, the cards cascade 110 ms apart and stage their contents (see ServiceCard).
+          <li key={s.id} data-rv-group data-rv-step="90" data-rv="card" data-rv-delay={i * 110} className="flex">
             <ServiceCard
               id={s.id}
+              order={i}
               index={String(i + 1).padStart(2, '0')}
               title={s.title}
               body={s.body}

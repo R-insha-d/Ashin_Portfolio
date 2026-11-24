@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# original full-size videos (too big for GitHub; the site uses the compressed copies in public/media)
+/public/projects/

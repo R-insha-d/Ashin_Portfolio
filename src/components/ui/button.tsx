@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import type { SectionId } from '@/lib/sections';
@@ -120,6 +121,17 @@ export function LinkButton({
           {children}
         </ButtonInner>
       </SectionLink>
+    );
+  }
+
+  // Another page of this site (e.g. /projects): client-side navigation, no full reload.
+  if (href.startsWith('/') && !href.startsWith('//') && !external && !download) {
+    return (
+      <Link href={href} className={classes} {...rest}>
+        <ButtonInner size={size} icon={icon} iconEnd={iconEnd}>
+          {children}
+        </ButtonInner>
+      </Link>
     );
   }
 

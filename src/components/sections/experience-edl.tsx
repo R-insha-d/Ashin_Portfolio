@@ -1,6 +1,7 @@
 import { profile, type Role } from '@/content/profile';
 import { Chip } from '@/components/ui/chip';
 import { SEPARATOR, formatYearSpan, speakYearSpan, toolNames } from '@/lib/content';
+import { cue } from './experience-cue';
 
 const c = profile.copy.experience;
 const DASH = '—';
@@ -18,25 +19,34 @@ function srSentence(role: Role): string {
 export function ExperienceEdl() {
   return (
     <div className="mt-10">
-      <div
-        aria-hidden="true"
-        // Column widths per spec S5.4.
-        className="micro-caps hidden grid-cols-[4.5rem_4rem_8rem_4.5rem_1fr] gap-x-4 border-b border-hairline pb-3 text-ash lg:grid"
-      >
-        <span>{c.edl.columns.event}</span>
-        <span>{c.edl.columns.track}</span>
-        <span>{c.edl.columns.inOut}</span>
-        <span>{c.edl.columns.duration}</span>
-        <span>{c.edl.columns.role}</span>
+      {/* Unclipped trigger for the header's wipe (an observer never sees a clipped target). */}
+      <div data-rv-group>
+        <div
+          aria-hidden="true"
+          data-rv="wipe"
+          // Column widths per spec S5.4.
+          className="micro-caps hidden grid-cols-[4.5rem_4rem_8rem_4.5rem_1fr] gap-x-4 border-b border-hairline pb-3 text-ash lg:grid"
+        >
+          <span>{c.edl.columns.event}</span>
+          <span>{c.edl.columns.track}</span>
+          <span>{c.edl.columns.inOut}</span>
+          <span>{c.edl.columns.duration}</span>
+          <span>{c.edl.columns.role}</span>
+        </div>
       </div>
       <ol aria-label={c.edl.label} className="flex flex-col gap-4 lg:gap-0">
         {profile.roles.map((role, i) => {
           const track = role.dates ? profile.copy.experience.timeline.trackCodes.v1 : c.edl.binTrack;
           const inOut = role.dates ? formatYearSpan(role.dates) : DASH;
           const org = [role.company, role.location].filter(Boolean).join(SEPARATOR);
+          // The first row can enter with the section heading on phones: let the heading lead.
+          const at = (ms: number) => (i === 0 ? 550 : 0) + ms; // row 001 follows the timeline panel (desktop) or the navigator wipe (phones)
           return (
-            <li key={role.id}>
+            // Each row is its own reveal group, timed by cues (ms): the row rises, then its
+            // timecode cells and tools line follow, like an EDL line being written.
+            <li key={role.id} data-rv-group data-rv-step="1">
               <article
+                {...cue('rise', at(0))}
                 id={`role-${role.id}`}
                 tabIndex={-1}
                 aria-labelledby={`role-${role.id}-title`}
@@ -49,13 +59,13 @@ export function ExperienceEdl() {
                   className="pointer-events-none absolute inset-y-0 -left-3 hidden w-0.5 bg-amber opacity-0 transition-opacity duration-hover group-data-selected/row:opacity-100 lg:block"
                 />
                 {/* Desktop meta cells */}
-                <span aria-hidden="true" className="tc hidden text-ash group-data-selected/row:text-amber lg:block">{eventNo(i)}</span>
-                <span aria-hidden="true" className="tc hidden text-ash group-data-selected/row:text-amber lg:block">{track}</span>
-                <span aria-hidden="true" className="tc hidden text-ash group-data-selected/row:text-amber lg:block">{inOut}</span>
-                <span aria-hidden="true" className="tc hidden uppercase text-ash group-data-selected/row:text-amber lg:block">{role.duration.short}</span>
+                <span aria-hidden="true" {...cue('mask', at(90))} className="tc hidden text-ash group-data-selected/row:text-amber lg:block">{eventNo(i)}</span>
+                <span aria-hidden="true" {...cue('mask', at(160))} className="tc hidden text-ash group-data-selected/row:text-amber lg:block">{track}</span>
+                <span aria-hidden="true" {...cue('mask', at(230))} className="tc hidden text-ash group-data-selected/row:text-amber lg:block">{inOut}</span>
+                <span aria-hidden="true" {...cue('mask', at(300))} className="tc hidden uppercase text-ash group-data-selected/row:text-amber lg:block">{role.duration.short}</span>
                 <div className="min-w-0">
                   {/* Mobile meta line */}
-                  <div aria-hidden="true" className="mb-3 flex flex-wrap items-center gap-2 lg:hidden">
+                  <div aria-hidden="true" {...cue('mask', at(120))} className="mb-3 flex flex-wrap items-center gap-2 lg:hidden">
                     <span className="tc text-ash group-data-selected/row:text-amber">
                       {eventNo(i)}{SEPARATOR}{track}{SEPARATOR}{inOut}{SEPARATOR}<span className="uppercase">{role.duration.short}</span>
                     </span>
@@ -72,7 +82,7 @@ export function ExperienceEdl() {
                     ))}
                   </ul>
                   {role.tools.length > 0 && (
-                    <p className="mt-4 flex flex-wrap items-baseline gap-x-2">
+                    <p {...cue('fade', at(360))} className="mt-4 flex flex-wrap items-baseline gap-x-2">
                       <span className="label-caps text-ash">{c.edl.toolsLabel}:</span>
                       <span className="text-small text-paper">{toolNames(role.tools, 'full').join(', ')}</span>
                     </p>

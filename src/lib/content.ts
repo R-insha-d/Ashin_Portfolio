@@ -2,10 +2,12 @@ import { profile, type EducationEntry, type Role, type Tool, type ToolId, type Y
 
 export const SEPARATOR = ' · ';
 const TOOL_BY_ID = new Map(profile.tools.map((t) => [t.id, t] as const));
+/** A tool id that is not in portfolio.json "tools" still renders (as its id) instead of crashing the page. */
 export function getTool(id: ToolId): Tool {
   const t = TOOL_BY_ID.get(id);
-  if (!t) throw new Error(`Unknown tool ${id}`);
-  return t;
+  if (t) return t;
+  if (process.env.NODE_ENV !== 'production') console.warn(`[portfolio.json] unknown tool id "${id}": add it to "tools".`);
+  return { id, name: id, shortName: id, vendor: '', extensions: [] };
 }
 export function toolNames(ids: readonly ToolId[], form: 'short' | 'full' = 'short'): string[] {
   return ids.map((id) => (form === 'short' ? getTool(id).shortName : getTool(id).name));
@@ -46,17 +48,11 @@ export function spanToFraction(span: YearSpan, ruler: YearSpan): { left: number;
   return { left: (span.from - ruler.from) / total, width: (span.to - span.from + 1) / total };
 }
 
-/**
- * Dev-time honesty checks (log loudly, never throw). Called by S5 and S3 in development.
- * The 2022–2023 rule reflects the current CV; update it only if Ashin supplies earlier dated roles.
- */
+/** Dev-time data checks for the timeline (log loudly, never throw). */
 export function checkTimelineHonesty(): string[] {
   const problems: string[] = [];
-  const v1Years = DATED_ROLES.flatMap((r) =>
-    Array.from({ length: r.dates.to - r.dates.from + 1 }, (_, i) => r.dates.from + i),
-  );
-  if (v1Years.some((y) => y < 2024)) problems.push('V1 lane must stay empty in 2022–2023');
-  if (DATED_ROLES.some((r) => r.dates.from < RULER.from || r.dates.to > RULER.to)) problems.push('A dated role falls outside the ruler');
-  if (profile.highlight.year !== 2026) problems.push('Huddle Global marker must cover 2026 only');
+  if (DATED_ROLES.some((r) => r.dates.from > r.dates.to)) problems.push('A role has "from" later than "to"');
+  if (profile.education.some((e) => e.dates.from > e.dates.to)) problems.push('An education entry has "from" later than "to"');
+  if (!profile.roles.some((r) => r.id === profile.highlight.roleId)) problems.push('highlight.roleId does not match any role id');
   return problems;
 }

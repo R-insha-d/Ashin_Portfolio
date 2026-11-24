@@ -1,9 +1,7 @@
 import { profile, type EducationEntry } from '@/content/profile';
 import { Section } from '@/components/ui/section';
 import { SectionHeading } from '@/components/ui/section-heading';
-import { Reveal } from '@/components/ui/reveal';
 import { EDUCATION_SCALE, spanToFraction, speakYearSpan } from '@/lib/content';
-import { STAGGER } from '@/lib/motion';
 import { cn } from '@/lib/cn';
 
 const c = profile.copy.education;
@@ -35,7 +33,7 @@ function RangeBar({ entry }: { entry: EducationEntry }) {
   const { left, width } = spanToFraction(entry.dates, EDUCATION_SCALE);
   return (
     <div aria-hidden="true" className="relative mt-auto h-0.5 w-full bg-hairline">
-      <span className="absolute inset-y-0 bg-amber" style={{ left: `${left * 100}%`, width: `${width * 100}%` }} />
+      <span data-rv="draw" data-rv-delay="380" className="absolute inset-y-0 bg-amber" style={{ left: `${left * 100}%`, width: `${width * 100}%` }} />
     </div>
   );
 }
@@ -44,12 +42,15 @@ export function Education() {
   return (
     <Section id="education">
       <SectionHeading id="education" eyebrow={c.eyebrow} display={c.display} />
-      <ul className="mt-(--stack) grid gap-5 md:grid-cols-2 lg:grid-cols-12">
-        {ENTRIES.map((entry, i) => (
-          <Reveal
-            as="li"
+      {/* Entrance (scroll reveal): the cards slide on in turn after the heading, and each card's
+          amber year bar draws once the card has landed. Members play in DOM order (card, bar, card…),
+          so the step is half the card-to-card spacing. */}
+      <ul data-rv-group data-rv-step="70" className="mt-(--stack) grid gap-5 md:grid-cols-2 lg:grid-cols-12">
+        {ENTRIES.map((entry) => (
+          <li
             key={entry.id}
-            delay={i * STAGGER.rise}
+            data-rv="card"
+            data-rv-delay="180"
             className={cn(entry.featured ? 'md:col-span-2 lg:col-span-6' : 'lg:col-span-3')}
           >
             <article
@@ -72,7 +73,7 @@ export function Education() {
               </div>
               <RangeBar entry={entry} />
             </article>
-          </Reveal>
+          </li>
         ))}
       </ul>
     </Section>

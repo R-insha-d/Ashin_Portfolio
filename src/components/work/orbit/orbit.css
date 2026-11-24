@@ -1,0 +1,213 @@
+/* Projects page ORBIT gallery (src/components/work/orbit/project-orbit.tsx). Plain global CSS with an "ob-" prefix:
+   this project's Turbopack rule runs every .css file through Tailwind, so nothing here is scoped. */
+
+/* ------------------------------------------------------------------ stage */
+.ob-stage {
+  position: relative;
+  container-type: size;
+  height: clamp(30rem, calc(100svh - 16rem), 56rem);
+  /* clip, not hidden: a hidden box with overflowing children (the grain) is a scroll container
+     that latches vertical touch scrolls and stops the page from scrolling on phones. */
+  overflow: clip;
+  isolation: isolate;
+  background:
+    radial-gradient(60% 55% at 50% 45%, rgb(255 181 71 / 0.05), transparent 70%),
+    var(--color-void);
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 47.99rem) {
+  .ob-stage { height: clamp(27rem, calc(100svh - 19rem), 40rem); }
+}
+
+.ob-canvas {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-standard);
+}
+.ob-canvas[data-ready="true"] { opacity: 1; }
+.ob-canvas canvas { display: block; width: 100%; height: 100%; outline: none; }
+
+/* Scrims keep the HUD legible over bright frames. */
+.ob-scrim {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(to bottom, rgb(11 11 12 / 0.85), transparent 22%),
+    linear-gradient(to top, rgb(11 11 12 / 0.92), transparent 30%),
+    radial-gradient(130% 95% at 50% 45%, transparent 58%, rgb(0 0 0 / 0.6));
+}
+.ob-grain {
+  pointer-events: none;
+  position: absolute;
+  inset: -40px;
+  z-index: 1;
+  background-image: var(--grain-tile);
+  background-size: 160px 160px;
+  opacity: calc(var(--grain-opacity) * 2.2);
+  mix-blend-mode: overlay;
+  animation: ob-grain 900ms steps(6) infinite;
+}
+@keyframes ob-grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-18px, 12px); }
+  40% { transform: translate(14px, -20px); }
+  60% { transform: translate(-10px, -8px); }
+  80% { transform: translate(20px, 16px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Viewfinder brackets, positioned every frame by the stage. */
+.ob-frame {
+  --bracket-len: 18px;
+  --bracket-width: 1.5px;
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  opacity: 0;
+  will-change: transform, width, height;
+}
+.ob-frame > .ob-frame-tag {
+  position: absolute;
+  left: 50%;
+  top: -1.9rem;
+  translate: -50% 0;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-standard), translate 250ms var(--ease-rise);
+}
+.ob-frame[data-hot="true"] > .ob-frame-tag { opacity: 1; translate: -50% -4px; }
+
+/* Follows a fine pointer over the stage. */
+.ob-cursor {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 180ms var(--ease-standard);
+}
+.ob-cursor > span {
+  display: inline-flex;
+  translate: 14px 14px;
+  align-items: center;
+  gap: 0.4rem;
+  height: 1.6rem;
+  padding: 0 0.6rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: background-color 180ms, color 180ms, scale 220ms var(--ease-rise);
+}
+.ob-cursor[data-show="true"] { opacity: 1; }
+.ob-cursor[data-kind="drag"] > span { background: rgb(19 19 21 / 0.78); color: var(--color-smoke); border: 1px solid var(--color-hairline); scale: 0.92; }
+.ob-cursor[data-kind="play"] > span { background: var(--color-amber); color: var(--color-void); border: 1px solid transparent; scale: 1; }
+.ob-cursor .ob-k-play { display: none; }
+.ob-cursor[data-kind="play"] .ob-k-play { display: inline; }
+.ob-cursor[data-kind="play"] .ob-k-drag { display: none; }
+@media (hover: none), (pointer: coarse) {
+  .ob-cursor { display: none; }
+}
+
+/* Big outlined project number in the lower HUD. */
+.ob-num {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-variation-settings: "wdth" 62;
+  font-size: clamp(3.5rem, 2rem + 6vw, 9.5rem);
+  line-height: 0.78;
+  letter-spacing: -0.03em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--color-amber);
+  font-variant-numeric: tabular-nums;
+}
+.ob-swap { animation: ob-swap 520ms var(--ease-rise) both; }
+@keyframes ob-swap {
+  from { opacity: 0; transform: translateY(0.35em); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+
+/* ------------------------------------------------------------------ loading placeholder */
+/* A still of the ring (CSS only) while three.js loads; cross-fades out when the canvas is ready. */
+/* Sizes follow OB_LAYOUT (orbit-shared.ts): the on-air screen fills 65% of the stage height on wider
+   screens and 50% on phones, sitting 4.5% / 7.5% above centre, so the first WebGL frame lines up. */
+.ob-ph {
+  --ph: 65cqh;
+  --lift: 4.5cqh;
+  position: absolute;
+  inset: 0;
+  perspective: 1400px;
+  transition: opacity 900ms var(--ease-standard);
+}
+@media (max-width: 47.99rem) { .ob-ph { --ph: 50cqh; --lift: 7.5cqh; } }
+.ob-ph[data-ready="true"] { opacity: 0; }
+.ob-ph-card {
+  position: absolute;
+  left: 50%;
+  top: calc(50% - var(--lift) - var(--ph) / 2 + var(--ph) * (1 - var(--h)));
+  height: calc(var(--ph) * var(--h));
+  width: calc(var(--ph) * var(--w));
+  translate: calc(var(--x) * var(--ph) - 50%) 0;
+  transform: rotateY(calc(var(--o) * -14deg)) scale(calc(1 - var(--a) * 0.06));
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-panel);
+  filter: brightness(calc(1 - var(--a) * 0.72)) saturate(calc(1 - var(--a) * 0.6));
+}
+.ob-ph-card[data-air="true"] { box-shadow: 0 0 0 1px var(--color-amber); }
+
+/* ------------------------------------------------------------------ index strip */
+.ob-strip {
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, transparent, #000 1.25rem, #000 calc(100% - 1.25rem), transparent);
+}
+.ob-strip::-webkit-scrollbar { display: none; }
+.ob-thumb { transition: border-color 200ms, opacity 200ms, transform 250ms var(--ease-rise); }
+.ob-thumb[aria-current="true"] { transform: translateY(-4px); }
+
+/* ------------------------------------------------------------------ calm rail (motion paused / no WebGL) */
+.ob-rail-frame {
+  position: relative;
+  padding-block: 1.75rem;
+  background-color: var(--color-panel);
+  border-block: 1px solid var(--color-hairline);
+}
+/* Sprocket holes along both edges of the film strip. */
+.ob-rail-frame::before,
+.ob-rail-frame::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 0.625rem;
+  background-image: repeating-linear-gradient(to right, transparent 0 0.75rem, var(--color-void) 0.75rem 1.5rem);
+  border-radius: 2px;
+  opacity: 0.9;
+}
+.ob-rail-frame::before { top: 0.55rem; }
+.ob-rail-frame::after { bottom: 0.55rem; }
+
+.ob-rail {
+  --card-h: clamp(16rem, 12rem + 16vw, 26rem);
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--gutter);
+  padding-inline: var(--gutter);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-rule) transparent;
+  list-style: none;
+  margin: 0;
+}
+.ob-rail > li { scroll-snap-align: start; flex: none; }
+.ob-rail-card {
+  height: var(--card-h);
+  width: min(calc(var(--card-h) * var(--ar)), calc(100vw - 2 * var(--gutter) - 1.5rem));
+}

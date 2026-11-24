@@ -20,9 +20,10 @@ export const HAS_WORK = profile.showreel !== null || profile.projects.length > 0
 const c = profile.copy;
 const ORDER: ReadonlyArray<{ id: SectionId; label: string; inNav: boolean }> = [
   { id: 'top', label: c.hero.hudLabel, inNav: false },
-  ...(HAS_WORK ? [{ id: 'work' as const, label: c.work.eyebrow, inNav: true }] : []),
   { id: 'about', label: c.about.eyebrow, inNav: true },
   { id: 'services', label: c.services.eyebrow, inNav: true },
+  // Keep this order in step with src/app/page.tsx.
+  ...(HAS_WORK ? [{ id: 'work' as const, label: c.work.eyebrow, inNav: true }] : []),
   { id: 'skills', label: c.skills.eyebrow, inNav: true },
   { id: 'experience', label: c.experience.eyebrow, inNav: true },
   { id: 'highlight', label: c.highlight.eyebrow, inNav: false },

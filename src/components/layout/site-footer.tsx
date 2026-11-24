@@ -53,6 +53,7 @@ export function SiteFooter() {
         <div className="credits-row mt-4 flex flex-col items-center gap-3">
           <SectionLink
             to="top"
+            scope="page"
             className="group/btn relative inline-flex h-11 select-none items-center justify-center gap-2 whitespace-nowrap rounded-button border border-edge px-5 text-small font-semibold tracking-[0.01em] text-paper transition-[background-color,border-color,color,transform] duration-hover ease-standard hover:border-paper hover:bg-panel active:scale-[0.98]"
           >
             <ArrowUp size={18} strokeWidth={1.5} aria-hidden />

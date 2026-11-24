@@ -1,47 +1,37 @@
-'use client';
-
-import { m, useInView } from 'motion/react';
-import { createContext, useContext, useRef, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { profile } from '@/content/profile';
-import { DURATION, EASE, INSTANT, STAGGER } from '@/lib/motion';
-import { useMotionPaused } from '@/lib/motion-pref';
 
-const SheetInView = createContext(false);
+/** Extra delay between neighbouring rows when they enter view together, in ms. */
+const ROW_STAGGER = 100;
+/** The rows start after the email block above them (label, address wipe, availability line). */
+const ROW_BASE = 300;
 
-/** The call-sheet list. Triggers the export bars once 40% of it is visible. */
+/** The call-sheet list. */
 export function ContactSheet({ className, children }: { className?: string; children: ReactNode }) {
-  const ref = useRef<HTMLUListElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.4 });
-  return (
-    <ul ref={ref} className={className}>
-      <SheetInView.Provider value={inView}>{children}</SheetInView.Provider>
-    </ul>
-  );
+  return <ul className={className}>{children}</ul>;
 }
 
-/** Decorative 1px amber "export" bar under a row, then "Ready". No percentages, ever. */
-export function ContactExportBar({ index }: { index: number }) {
-  const inView = useContext(SheetInView);
-  const paused = useMotionPaused();
-  const done = inView || paused;
-  const delay = index * STAGGER.trim;
+/**
+ * One call-sheet row. Entrance (scroll reveal): each row is its own group, so rows that scroll in
+ * one at a time (phones) each play on arrival, and rows that arrive together are staggered by
+ * `index`. The row rises, its amber "export" bar draws under it, then "Ready" pops at the end.
+ */
+export function ContactRow({ index, children }: { index: number; children: ReactNode }) {
+  const d = ROW_BASE + index * ROW_STAGGER;
   return (
-    <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 block">
-      <m.span
-        className="block h-px w-full bg-amber"
-        style={{ transformOrigin: '0% 50%' }}
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: done ? 1 : 0 }}
-        transition={paused ? INSTANT : { duration: DURATION.sweep, ease: EASE.trim, delay }}
-      />
-      <m.span
-        className="micro-caps absolute right-1 bottom-0 translate-y-1/2 bg-void px-1.5 text-amber sm:right-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: done ? 1 : 0 }}
-        transition={paused ? INSTANT : { duration: DURATION.quick, ease: 'linear', delay: delay + DURATION.sweep }}
-      >
-        {profile.copy.contact.ready}
-      </m.span>
-    </span>
+    // Step 1: the timing comes from the explicit delays below, not from the member order.
+    <li className="relative" data-rv-group data-rv-step="1" data-rv="rise" data-rv-delay={d}>
+      {children}
+      <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 block">
+        <span data-rv="draw" data-rv-delay={d + 240} className="block h-px w-full bg-amber" />
+        <span
+          data-rv="pop"
+          data-rv-delay={d + 760}
+          className="micro-caps absolute right-1 bottom-0 translate-y-1/2 bg-void px-1.5 text-amber sm:right-3"
+        >
+          {profile.copy.contact.ready}
+        </span>
+      </span>
+    </li>
   );
 }

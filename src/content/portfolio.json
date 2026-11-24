@@ -1,0 +1,686 @@
+{
+  "// ==========  HOW TO EDIT THIS FILE  ==========": [
+    "Everything on the website comes from this file. Edit it, save, and the dev server (npm run dev) updates the page.",
+    "Sections below follow the website from top to bottom. Lines starting with \"//\" are headings and are ignored by the site.",
+    "Keep it valid JSON: text in \"double quotes\", a comma between items, NO comma after the last item in a list. Use null for \"nothing\".",
+    "Every \"id\" must be unique, lowercase-with-dashes (for example \"brand-film\"). Tool lists use the ids from section 6 (TOOLS).",
+    "Before putting the site online, run \"npm run build\": if something in this file is wrong, it stops and names the field."
+  ],
+
+  "// ==========  1. ABOUT YOU  ==========": "Name, job title, location and languages. Used in the hero, About, footer, preloader and search results.",
+  "name": "Ashin N",
+  "initials": "AN",
+  "role": "Video Editor & 3D Artist",
+  "roleParts": { "before": "Video Editor", "after": "3D Artist" },
+  "experienceLabel": "2+ years",
+  "location": {
+    "display": "Kannur, Kerala, India",
+    "locality": "Kannur",
+    "region": "Kerala",
+    "country": "India",
+    "countryCode": "IN"
+  },
+  "languages": [
+    { "name": "Malayalam", "nativeName": null, "lang": "ml" },
+    { "name": "English", "nativeName": null, "lang": "en" }
+  ],
+
+  "// ==========  2. CONTACT  ==========": "Email, phone, WhatsApp and LinkedIn. \"display\" is what visitors see, \"href\" is the link.",
+  "contact": {
+    "email": "ashindesigner20@gmail.com",
+    "phone": {
+      "display": "+91 62820 90266",
+      "href": "tel:+916282090266",
+      "e164": "+916282090266"
+    },
+    "whatsapp": { "display": "+91 62820 90266", "href": "https://wa.me/916282090266" },
+    "linkedin": {
+      "display": "linkedin.com/in/ashin-n-543a2829a",
+      "href": "https://www.linkedin.com/in/ashin-n-543a2829a"
+    }
+  },
+
+  "// ==========  3. PHOTO  ==========": "Portrait for the About section. null = colour-bars placeholder. Put the image in public/images, then copy the example from section 9.",
+  "photo": null,
+
+  "// ==========  4. EXPERIENCE  ==========": "Jobs, newest first. \"dates\": {\"from\": 2025, \"to\": 2026} puts a job on the year ruler; \"dates\": null shows only its duration. \"tools\" = tool ids from section 6.",
+  "roles": [
+    {
+      "id": "techbrein",
+      "title": "Video Editor & Content Creator",
+      "company": "TechBrein Solutions",
+      "orgLabel": "TechBrein Solutions",
+      "location": "Calicut",
+      "dates": { "from": 2025, "to": 2026 },
+      "duration": { "short": "1 yr+", "spoken": "1 year plus" },
+      "bullets": [
+        "Edit and produce video content for company and client projects using Adobe Premiere Pro, After Effects and Photoshop.",
+        "Create engaging content and design motion graphics to support brand and marketing needs.",
+        "Contribute to video production work, from planning through post-production and final delivery.",
+        "Represented TechBrein Solutions as an exhibitor at Huddle Global 2026, presenting the company’s work and engaging with event visitors."
+      ],
+      "tools": ["premiere-pro", "after-effects", "photoshop"]
+    },
+    {
+      "id": "samvedha",
+      "title": "Motion Graphics Designer",
+      "company": "Samvedha Creatives",
+      "orgLabel": "Samvedha Creatives",
+      "location": "Calicut",
+      "dates": { "from": 2024, "to": 2024 },
+      "duration": { "short": "7 mo", "spoken": "7 months" },
+      "bullets": [
+        "Designed motion graphics for video projects using Adobe After Effects and Illustrator.",
+        "Assisted the creative team with video production tasks."
+      ],
+      "tools": ["after-effects", "illustrator"]
+    },
+    {
+      "id": "mango-media",
+      "title": "Intern",
+      "company": "Mango Media",
+      "orgLabel": "Mango Media",
+      "location": "Kannur",
+      "dates": null,
+      "duration": { "short": "3 mo", "spoken": "3 months" },
+      "bullets": [
+        "Gained hands-on experience in video editing and design workflows.",
+        "Assisted with post-production and creative projects."
+      ],
+      "tools": []
+    },
+    {
+      "id": "freelance",
+      "title": "Freelance Video Editor & Graphic Designer",
+      "company": null,
+      "orgLabel": "Freelance",
+      "location": null,
+      "dates": null,
+      "duration": { "short": "1 yr+", "spoken": "1 year plus" },
+      "bullets": [
+        "Produced video edits, graphics and 3D visuals for individual and business clients.",
+        "Managed projects independently, from brief to final delivery."
+      ],
+      "tools": []
+    }
+  ],
+
+  "// ==========  5. HIGHLIGHT  ==========": "The featured moment (Huddle Global). \"roleId\" must match an \"id\" in EXPERIENCE.",
+  "highlight": {
+    "event": "Huddle Global 2026",
+    "year": 2026,
+    "capacity": "Exhibitor",
+    "organisation": "TechBrein Solutions",
+    "roleId": "techbrein"
+  },
+
+  "// ==========  6. TOOLS & SKILLS  ==========": "tools = software (their ids are used everywhere else). skillGroups = the Toolkit panels. otherSkills = the small tags.",
+  "tools": [
+    {
+      "id": "premiere-pro",
+      "name": "Adobe Premiere Pro",
+      "shortName": "Premiere Pro",
+      "vendor": "Adobe",
+      "extensions": [".prproj"]
+    },
+    {
+      "id": "after-effects",
+      "name": "Adobe After Effects",
+      "shortName": "After Effects",
+      "vendor": "Adobe",
+      "extensions": [".aep"]
+    },
+    {
+      "id": "photoshop",
+      "name": "Adobe Photoshop",
+      "shortName": "Photoshop",
+      "vendor": "Adobe",
+      "extensions": [".psd"]
+    },
+    {
+      "id": "illustrator",
+      "name": "Adobe Illustrator",
+      "shortName": "Illustrator",
+      "vendor": "Adobe",
+      "extensions": [".ai"]
+    },
+    {
+      "id": "3ds-max",
+      "name": "Autodesk 3ds Max",
+      "shortName": "3ds Max",
+      "vendor": "Autodesk",
+      "extensions": [".max"]
+    },
+    {
+      "id": "maya",
+      "name": "Autodesk Maya",
+      "shortName": "Maya",
+      "vendor": "Autodesk",
+      "extensions": [".ma", ".mb"]
+    }
+  ],
+  "skillGroups": [
+    {
+      "id": "video-motion",
+      "title": "Video editing & motion graphics",
+      "tools": ["premiere-pro", "after-effects"]
+    },
+    {
+      "id": "graphic-design",
+      "title": "Graphic design",
+      "tools": ["photoshop", "illustrator"]
+    },
+    {
+      "id": "3d-modeling",
+      "title": "3D modeling & animation",
+      "tools": ["3ds-max", "maya"]
+    }
+  ],
+  "otherSkills": [
+    "3D Animation",
+    "VFX",
+    "Visual Storytelling",
+    "Content Creation",
+    "Post-Production"
+  ],
+
+  "// ==========  7. SERVICES  ==========": "The \"What I do\" cards.",
+  "services": [
+    {
+      "id": "video-editing",
+      "title": "Video editing",
+      "body": "I edit and produce video content for company and client projects, and I contribute to production from planning through post-production to final delivery.",
+      "tools": ["premiere-pro", "after-effects"]
+    },
+    {
+      "id": "motion-graphics",
+      "title": "Motion graphics",
+      "body": "I design motion graphics for video projects, and I create content that supports brand and marketing needs.",
+      "tools": ["after-effects", "illustrator"]
+    },
+    {
+      "id": "3d",
+      "title": "3D modeling & animation",
+      "body": "I model and animate in 3D. I trained in 3D animation and VFX, and I have produced 3D visuals for individual and business clients.",
+      "tools": ["3ds-max", "maya"]
+    },
+    {
+      "id": "graphic-design",
+      "title": "Graphic design",
+      "body": "I design graphics in Photoshop and Illustrator, and I have produced graphics for individual and business clients.",
+      "tools": ["photoshop", "illustrator"]
+    }
+  ],
+
+  "// ==========  8. EDUCATION  ==========": "Courses and schools, newest first. The entry with \"featured\": true is the \"Training\" line. Keep at least one.",
+  "education": [
+    {
+      "id": "diploma",
+      "qualification": "Diploma in 3D Animation & VFX",
+      "institution": "Sree Sankaracharya Computer Center",
+      "place": "Thalassery",
+      "board": null,
+      "dates": { "from": 2022, "to": 2024 },
+      "featured": true
+    },
+    {
+      "id": "higher-secondary",
+      "qualification": "Higher Secondary Education",
+      "institution": "PRMHSS Panoor",
+      "place": null,
+      "board": "Kerala State Board",
+      "dates": { "from": 2018, "to": 2020 },
+      "featured": false
+    },
+    {
+      "id": "secondary",
+      "qualification": "Secondary Education",
+      "institution": "RGMHSS Mokeri",
+      "place": null,
+      "board": "Kerala State Board",
+      "dates": { "from": 2015, "to": 2018 },
+      "featured": false
+    }
+  ],
+
+  "// ==========  9. WORK: PROJECTS, SHOWREEL & CV  ==========": "Your projects, in the order they appear. \"featured\": true also shows a project in the Work section of the home page (4 looks best). Put videos in public/media/projects and poster images in public/images/projects. \"category\" is free text: the Projects page makes a filter button for each one. Unknown details stay null. Copy the examples just below. \"projectCategoryOrder\" sets the order of the filter buttons on the Projects page (first = leftmost, after \"All\").",
+
+  "// examples (copy, do not edit here)": {
+    "photo": {
+      "src": "/images/ashin-portrait.jpg",
+      "alt": "Portrait of Ashin N",
+      "focus": "50% 30%"
+    },
+    "project": {
+      "id": "new-project",
+      "title": "New project",
+      "category": "2D Motion",
+      "featured": false,
+      "video": {
+        "src": "/media/projects/new-project.mp4",
+        "preview": null,
+        "poster": "/images/projects/new-project.jpg",
+        "width": 1080,
+        "height": 1920,
+        "duration": "0:20"
+      },
+      "image": null,
+      "role": "Motion design and edit",
+      "tools": ["after-effects", "premiere-pro"],
+      "year": 2026,
+      "client": null,
+      "summary": "One or two sentences about the project.",
+      "link": null
+    },
+    "showreel": {
+      "title": "Showreel",
+      "sources": [
+        { "src": "/media/showreel.mp4", "type": "video/mp4" }
+      ],
+      "poster": "/images/showreel-poster.jpg",
+      "description": "What the reel shows.",
+      "durationLabel": "1:30",
+      "captions": null,
+      "audioNote": "Music only, no dialogue."
+    },
+    "cv": { "href": "/files/ashin-n-cv.pdf", "label": "Download my CV (PDF)" }
+  },
+  "showreel": null,
+  "projects": [
+    {
+      "id": "tyre",
+      "title": "Tyre",
+      "category": "3D Animation",
+      "featured": true,
+      "video": {
+        "src": "/media/projects/tyre.mp4",
+        "preview": "/media/projects/tyre-preview.mp4",
+        "poster": "/images/projects/tyre.jpg",
+        "width": 1080,
+        "height": 1920,
+        "duration": "0:18"
+      },
+      "image": null,
+      "role": null,
+      "tools": [],
+      "year": null,
+      "client": null,
+      "summary": null,
+      "link": null
+    },
+    {
+      "id": "imageo",
+      "title": "Imageo",
+      "category": "3D Animation",
+      "featured": true,
+      "video": {
+        "src": "/media/projects/imageo.mp4",
+        "preview": "/media/projects/imageo-preview.mp4",
+        "poster": "/images/projects/imageo.jpg",
+        "width": 1080,
+        "height": 1920,
+        "duration": "0:15"
+      },
+      "image": null,
+      "role": null,
+      "tools": [],
+      "year": null,
+      "client": null,
+      "summary": null,
+      "link": null
+    },
+    {
+      "id": "trip-teaser",
+      "title": "Trip Teaser",
+      "category": "Real-Time Video",
+      "featured": true,
+      "video": {
+        "src": "/media/projects/trip-teaser.mp4",
+        "preview": "/media/projects/trip-teaser-preview.mp4",
+        "poster": "/images/projects/trip-teaser.jpg",
+        "width": 1080,
+        "height": 1920,
+        "duration": "0:22"
+      },
+      "image": null,
+      "role": null,
+      "tools": [],
+      "year": null,
+      "client": null,
+      "summary": null,
+      "link": null
+    },
+    {
+      "id": "trip-teaser-2",
+      "title": "Trip Teaser 2",
+      "category": "Real-Time Video",
+      "featured": true,
+      "video": {
+        "src": "/media/projects/trip-teaser-2.mp4",
+        "preview": "/media/projects/trip-teaser-2-preview.mp4",
+        "poster": "/images/projects/trip-teaser-2-v2.jpg",
+        "width": 1080,
+        "height": 1920,
+        "duration": "0:17"
+      },
+      "image": null,
+      "role": null,
+      "tools": [],
+      "year": null,
+      "client": null,
+      "summary": null,
+      "link": null
+    },
+    {
+      "id": "best-india-onam",
+      "title": "Best India Onam",
+      "category": "2D Motion",
+      "featured": false,
+      "video": {
+        "src": "/media/projects/best-india-onam.mp4",
+        "preview": "/media/projects/best-india-onam-preview.mp4",
+        "poster": "/images/projects/best-india-onam.jpg",
+        "width": 1080,
+        "height": 1920,
+        "duration": "0:33"
+      },
+      "image": null,
+      "role": null,
+      "tools": [],
+      "year": null,
+      "client": null,
+      "summary": null,
+      "link": null
+    },
+    {
+      "id": "food",
+      "title": "Food",
+      "category": "2D Motion",
+      "featured": false,
+      "video": {
+        "src": "/media/projects/food.mp4",
+        "preview": "/media/projects/food-preview.mp4",
+        "poster": "/images/projects/food.jpg",
+        "width": 1080,
+        "height": 1920,
+        "duration": "0:16"
+      },
+      "image": null,
+      "role": null,
+      "tools": [],
+      "year": null,
+      "client": null,
+      "summary": null,
+      "link": null
+    },
+    {
+      "id": "shiva",
+      "title": "Shiva",
+      "category": "2D Motion",
+      "featured": false,
+      "video": {
+        "src": "/media/projects/shiva.mp4",
+        "preview": "/media/projects/shiva-preview.mp4",
+        "poster": "/images/projects/shiva-v2.jpg",
+        "width": 1920,
+        "height": 1080,
+        "duration": "0:14"
+      },
+      "image": null,
+      "role": null,
+      "tools": [],
+      "year": null,
+      "client": null,
+      "summary": null,
+      "link": null
+    }
+  ],
+  "projectCategoryOrder": ["Real-Time Video", "2D Motion", "3D Animation"],
+  "cv": null,
+
+  "// ==========  10. SITE TEXT  ==========": "Every heading, button and label, grouped by page section (hero, about, services, contact...). Change the words, but do not rename or delete the keys. Some headings mention counts (e.g. \"Six core tools\"); update them if you add or remove items.",
+  "copy": {
+    "meta": {
+      "title": "Ashin N — Video Editor & 3D Artist, Kannur, Kerala",
+      "description": "Video Editor & 3D Artist in Kannur, Kerala, India. I have over 2 years of professional experience in video editing, motion graphics, graphic design and 3D modeling.",
+      "siteName": "Ashin N",
+      "ogAlt": "Ashin N, Video Editor & 3D Artist, Kannur, Kerala, India",
+      "keywords": [
+        "Ashin N",
+        "video editor",
+        "3D artist",
+        "motion graphics",
+        "graphic design",
+        "3D modeling",
+        "Kannur",
+        "Kerala",
+        "Adobe Premiere Pro",
+        "Adobe After Effects",
+        "Autodesk Maya",
+        "Autodesk 3ds Max"
+      ]
+    },
+    "a11y": {
+      "skipLink": "Skip to content",
+      "newTab": "(opens in a new tab)",
+      "datesNotListed": "dates not listed",
+      "yearRangeJoiner": "to"
+    },
+    "sequence": {
+      "name": "Sequence 01",
+      "short": "Seq 01",
+      "inPoint": "In",
+      "outPoint": "Out",
+      "end": "End of sequence"
+    },
+    "motion": {
+      "rec": "Rec",
+      "standby": "Standby",
+      "action": "pause motion",
+      "hint": "Stops the 3D reel, running timecodes, film grain and the blinking light.",
+      "rowLabel": "Motion"
+    },
+    "copyButton": {
+      "idle": "Copy",
+      "done": "Copied",
+      "failed": "Copy failed",
+      "emailSuffix": "email address",
+      "emailAnnouncement": "Email address copied"
+    },
+    "header": {
+      "homeLabel": "Ashin N, back to top",
+      "navLabel": "Sections",
+      "contact": "Contact",
+      "menu": "Menu",
+      "close": "Close",
+      "menuLabel": "Site menu",
+      "menuNavLabel": "Site sections",
+      "menuContactTitle": "Get in touch",
+      "email": "Email",
+      "call": "Call",
+      "whatsapp": "WhatsApp",
+      "linkedin": "LinkedIn"
+    },
+    "hero": {
+      "hudLabel": "Opening",
+      "eyebrow": "Portfolio · Kannur, Kerala, India",
+      "lead": "I have over 2 years of professional experience in video editing, motion graphics, graphic design and 3D modeling, across media production, creative agencies and freelance projects.",
+      "ctaEmail": "Email me",
+      "ctaTimeline": "See my timeline",
+      "ctaShowreel": "Watch my showreel",
+      "ctaWhatsApp": "WhatsApp",
+      "ctaLinkedIn": "LinkedIn",
+      "slate": {
+        "label": "Slate",
+        "ariaLabel": "At a glance",
+        "tools": "Tools",
+        "latest": "Latest",
+        "workedAt": "Worked at",
+        "training": "Training",
+        "contact": "Contact"
+      }
+    },
+    "monitor": {
+      "program": "Program",
+      "source": "Source",
+      "reelClock": "Reel · 25p",
+      "portraitAspect": "4:5",
+      "status": {
+        "standby": "Standby",
+        "buffering": "Buffering…",
+        "live": "Live",
+        "unavailable": "Static preview · 3D needs WebGL",
+        "fallback": "Static preview"
+      },
+      "viewIn3d": "View in 3D",
+      "loading3d": "Loading 3D…",
+      "hintPointer": "Drag the reel to jog",
+      "hintTouch": "Swipe sideways to jog",
+      "groupLabel": "3D film reel",
+      "groupDescription": "A decorative 3D film reel. Drag it sideways, or use the transport buttons, to jog it one frame at a time.",
+      "transportLabel": "Reel transport",
+      "back": "Back one frame",
+      "forward": "Forward one frame",
+      "play": "Play reel",
+      "pause": "Pause reel",
+      "modes": { "play": "Play", "pause": "Pause", "jog": "Jog", "shuttle": "Shuttle" }
+    },
+    "about": {
+      "eyebrow": "About",
+      "display": { "lead": "Two crafts, one ", "cut": "timeline." },
+      "paragraphs": [
+        "I’m a video editor and 3D artist with over 2 years of professional experience across media production, creative agencies and freelance projects. I work in video editing, motion graphics, graphic design and 3D modeling, using Adobe Creative Suite and Autodesk software.",
+        "I hold a Diploma in 3D Animation & VFX, and I’m looking for a role where I can apply my creative and technical skills to help a company meet its goals."
+      ],
+      "propertiesTitle": "Clip properties",
+      "properties": {
+        "experience": "Experience",
+        "roles": "Roles",
+        "tools": "Core tools",
+        "training": "Training",
+        "languages": "Languages",
+        "basedIn": "Based in"
+      }
+    },
+    "services": {
+      "eyebrow": "What I do",
+      "display": { "lead": "From brief to ", "cut": "final delivery." },
+      "intro": "I work across four crafts, in Adobe Creative Suite and Autodesk software.",
+      "toolsLabel": "Tools"
+    },
+    "skills": {
+      "eyebrow": "Toolkit",
+      "display": { "lead": "Six core tools, three ", "cut": "disciplines." },
+      "intro": "Adobe Creative Suite for editing, motion and design. Autodesk software for 3D modeling and animation.",
+      "extensionsLabel": "Project files",
+      "otherTitle": "Also in my kit"
+    },
+    "experience": {
+      "eyebrow": "Experience",
+      "display": { "lead": "Where I’ve ", "cut": "worked." },
+      "intro": "Roles with dates sit on the ruler. My internship at Mango Media and my freelance work sit in the bin with their durations.",
+      "timeline": {
+        "panelLabel": "Timeline · Career",
+        "groupLabel": "Career timeline, years as listed on my CV, not to scale",
+        "rulerNote": "Years as listed on my CV · not to scale",
+        "tracks": { "v2": "Training", "v1": "Roles", "a1": "Tools" },
+        "trackCodes": { "v2": "V2", "v1": "V1", "a1": "A1" },
+        "marker": "Huddle Global 2026 · Exhibitor",
+        "bin": "Bin · Duration only"
+      },
+      "edl": {
+        "label": "Edit decision list",
+        "columns": {
+          "event": "Event",
+          "track": "Track",
+          "inOut": "In–Out",
+          "duration": "Dur",
+          "role": "Role"
+        },
+        "binTrack": "Bin",
+        "toolsLabel": "Tools named"
+      }
+    },
+    "highlight": {
+      "eyebrow": "Highlight",
+      "display": { "lead": "Huddle Global ", "cut": "2026." },
+      "kicker": "Exhibitor for TechBrein Solutions",
+      "body": "I represented TechBrein Solutions as an exhibitor at Huddle Global 2026, presenting the company’s work and engaging with event visitors.",
+      "markerLabel": "Marker · Exhibitor"
+    },
+    "education": {
+      "eyebrow": "Education",
+      "display": { "lead": "Trained in 3D animation & ", "cut": "VFX." }
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "display": { "lead": "Let’s make the next ", "cut": "cut." },
+      "intro": "Whether you’re hiring or have a project in mind, email me, call or message me on WhatsApp.",
+      "availability": "Seeking a role where I can apply my creative and technical skills to help a company meet its goals.",
+      "emailLabel": "Email",
+      "rows": {
+        "phone": "Phone",
+        "whatsapp": "WhatsApp",
+        "linkedin": "LinkedIn",
+        "location": "Location",
+        "languages": "Languages"
+      },
+      "actions": {
+        "call": "Call",
+        "whatsapp": "Message on WhatsApp",
+        "linkedin": "View profile",
+        "linkedinSuffix": "on LinkedIn"
+      },
+      "ready": "Ready"
+    },
+    "work": {
+      "eyebrow": "Work",
+      "display": { "lead": "", "cut": "Selects." },
+      "introReelAndProjects": "My showreel, then selected projects.",
+      "introReel": "My showreel.",
+      "introProjects": "A few recent pieces in 2D motion, 3D animation and real-time video. Select one to play it.",
+      "showreelLabel": "Showreel",
+      "descriptionLabel": "What’s in the reel",
+      "durationLabel": "Duration",
+      "roleLabel": "My role",
+      "toolsLabel": "Tools",
+      "yearLabel": "Year",
+      "clientLabel": "Client",
+      "seeAll": "See all projects",
+      "categoryLabel": "Category",
+      "play": "Play",
+      "close": "Close",
+      "previous": "Previous project",
+      "next": "Next project",
+      "playerLabel": "Project video"
+    },
+    "projectsPage": {
+      "metaTitle": "Projects — Ashin N, Video Editor & 3D Artist",
+      "metaDescription": "2D motion, 3D animation and real-time video projects by Ashin N, Video Editor & 3D Artist in Kannur, Kerala.",
+      "eyebrow": "Projects",
+      "display": { "lead": "Highlighted ", "cut": "Projects." },
+      "intro": "2D motion, 3D animation and real-time video on one reel. Spin it, bring a clip on air, then play it with sound.",
+      "filterLabel": "Filter projects by category",
+      "all": "All",
+      "back": "Back to home",
+      "empty": "No projects in this category yet.",
+      "labels": {
+        "playWithSound": "Play with sound",
+        "preview": "Preview",
+        "reel": "Reel",
+        "film": "Film",
+        "clips": "clips",
+        "runtime": "Total runtime",
+        "selects": "Selects",
+        "endOfRoll": "End of roll",
+        "hint": "Select a clip to play it with sound."
+      }
+    },
+    "footer": {
+      "creditsLabel": "Credits",
+      "linksLabel": "Contact links",
+      "backToTop": "Back to top",
+      "copyright": "© Ashin N"
+    }
+  }
+}

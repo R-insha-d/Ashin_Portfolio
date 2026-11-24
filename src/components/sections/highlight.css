@@ -1,0 +1,39 @@
+/*
+ * Highlight title: the scroll reveal's `mask` look (rising out of a mask line), drawn with
+ * mask-size instead of clip-path. A clip-path would also clip the heading inside it out of
+ * IntersectionObserver's view, so SectionHeading's own in-view trigger would only fire once the
+ * clip had opened. Masks are ignored by IntersectionObserver, so the heading triggers on time.
+ */
+.hl-title[data-rv='mask'][data-rv-state='wait'],
+.hl-title[data-rv='mask'][data-rv-state='in'] {
+  clip-path: none;
+  mask-image: linear-gradient(#000, #000);
+  mask-repeat: no-repeat;
+  mask-position: 0 0;
+  mask-size: 100% 100%;
+}
+/* Only the reveal is transitioned; arming hides instantly. */
+.hl-title[data-rv='mask'][data-rv-state='in'] {
+  transition:
+    transform 1100ms cubic-bezier(0.22, 1, 0.36, 1) var(--rv-d),
+    mask-size 1100ms cubic-bezier(0.77, 0, 0.175, 1) var(--rv-d);
+}
+.hl-title[data-rv='mask'][data-rv-state='wait'] {
+  mask-size: 100% 0%;
+}
+
+:root[data-motion='paused'] .hl-title[data-rv='mask'][data-rv-state] {
+  mask-image: none;
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion]) .hl-title[data-rv='mask'][data-rv-state] {
+    mask-image: none;
+    transition: none;
+  }
+}
+@media print {
+  .hl-title[data-rv='mask'][data-rv-state] {
+    mask-image: none !important;
+  }
+}

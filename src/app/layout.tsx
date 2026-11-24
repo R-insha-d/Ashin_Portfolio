@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Archivo, JetBrains_Mono } from 'next/font/google';
+import { ContentHotReload } from '@/components/dev/content-hot-reload';
 import { Preloader } from '@/components/preloader/preloader';
 import { Providers } from '@/components/ui/providers';
 import { profile } from '@/content/profile';
@@ -63,6 +64,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       <body>
         <Preloader />
         <Providers>{children}</Providers>
+        {process.env.NODE_ENV === 'development' ? <ContentHotReload /> : null}
         <div id="announcer" role="status" aria-live="polite" aria-atomic="true" className="sr-only" />
       </body>
     </html>

@@ -20,20 +20,22 @@ npm start
 
 ## Edit the content
 
-All text, contact details, roles and education live in one file: `src/content/profile.ts`.
+All text and data live in one JSON file: `src/content/portfolio.json`. That covers contact details, roles, education, tools, services, skills, projects and every heading and button label. Add, change or delete entries there and save; `npm run dev` reloads the page. The file follows the website from top to bottom, with a `// ==========` heading and a short explanation for each section, plus copy-paste examples in section 9.
+
+`src/content/profile.ts` only loads and type-checks the JSON, so you don't need to edit it. If an edit breaks the expected shape (a missing field, or text where a number belongs), `npm run build` fails and names the field.
 
 **Add the profile photo**
 
 1. Put the photo in `public/images/`, for example `public/images/ashin-portrait.jpg`.
-2. In `src/content/profile.ts`, replace `photo: null` with:
+2. In `portfolio.json`, replace `"photo": null` with:
 
-   ```ts
-   photo: { src: '/images/ashin-portrait.jpg', alt: 'Portrait of Ashin N', focus: '50% 30%' },
+   ```json
+   "photo": { "src": "/images/ashin-portrait.jpg", "alt": "Portrait of Ashin N", "focus": "50% 30%" }
    ```
 
 Until a photo file exists, the About section shows a colour-bars placeholder.
 
-**Showreel and work samples**: fill `showreel` and `projects` in the same file. The Work section, its nav link and the hero's showreel button appear only once they have content.
+**Showreel and work samples**: fill `showreel` and `projects` in the same file (examples are in section 9 of the file). The Work section, its nav link and the hero's showreel button appear only once they have content.
 
 ## Deploy
 

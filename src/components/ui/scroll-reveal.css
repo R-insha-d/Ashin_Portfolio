@@ -1,0 +1,122 @@
+/*
+ * Scroll reveal: entrance animations for the home page sections (see scroll-reveal.tsx).
+ *
+ * Mark an element with data-rv="<variant>". Wrap related elements in a [data-rv-group] container
+ * (optionally data-rv-step="90" for the ms between them, "0" for none); the group triggers when it
+ * scrolls into view and its elements play in DOM order. A [data-rv] outside any group triggers by
+ * itself (clipped or zero-width variants are watched through their parent element).
+ * Optional: data-rv-delay="120" (ms) on an element; data-rv-count on a number (on a member or on a
+ * leaf inside one) to count it up. Gate tuning per element: --rv-radius (corner radius while
+ * opening, default 12px) and --rv-scale (zoom it settles from, default 1.05).
+ *
+ * States set by the controller: wait (hidden, armed below the fold) → in (animating) → done (no
+ * reveal styles left, so hover effects and focus rings behave normally). Content that has no state
+ * (server HTML, no JavaScript, above the fold at load, motion paused) is simply visible.
+ */
+
+[data-rv] {
+  --rv-d: calc(var(--rv-i, 0) * var(--rv-step, 80ms) + var(--rv-delay, 0ms));
+}
+
+/* Only the reveal is transitioned; arming (no state → wait) hides instantly. */
+[data-rv][data-rv-state='in'] {
+  transition:
+    opacity 900ms cubic-bezier(0.22, 1, 0.36, 1) var(--rv-d),
+    transform 1100ms cubic-bezier(0.22, 1, 0.36, 1) var(--rv-d),
+    clip-path 1100ms cubic-bezier(0.77, 0, 0.175, 1) var(--rv-d),
+    filter 900ms cubic-bezier(0.22, 1, 0.36, 1) var(--rv-d);
+}
+
+/* rise: a calm lift for blocks of content */
+[data-rv='rise'][data-rv-state='wait'] {
+  opacity: 0;
+  transform: translate3d(0, 2.25rem, 0);
+}
+
+/* focus: a focus pull — blurred and slightly low, then sharp. For paragraphs and quotes. */
+[data-rv='focus'][data-rv-state='wait'] {
+  opacity: 0;
+  transform: translate3d(0, 1rem, 0) scale(0.985);
+  filter: blur(12px);
+}
+
+/* card: rises with a slight 3D tilt, like a print sliding onto a lightbox */
+[data-rv='card'] {
+  transform-origin: 50% 100%;
+}
+[data-rv='card'][data-rv-state='wait'] {
+  opacity: 0;
+  transform: perspective(900px) translate3d(0, 3.5rem, 0) rotateX(9deg);
+}
+
+/* gate: a shutter opening from the centre line, with a small zoom settle. For images and panels. */
+[data-rv='gate'][data-rv-state='wait'] {
+  clip-path: inset(50% 0% 50% 0% round var(--rv-radius, 12px));
+  transform: scale(var(--rv-scale, 1.05));
+}
+[data-rv='gate'][data-rv-state='in'] {
+  clip-path: inset(0% 0% 0% 0% round var(--rv-radius, 12px));
+}
+
+/* wipe: a left-to-right edit wipe. For big type and timelines. */
+[data-rv='wipe'][data-rv-state='wait'] {
+  clip-path: inset(0% 100% 0% 0%);
+}
+[data-rv='wipe'][data-rv-state='in'] {
+  clip-path: inset(0% 0% 0% 0%);
+}
+
+/* mask: text rising out of a mask line, title-sequence style. */
+[data-rv='mask'][data-rv-state='wait'] {
+  clip-path: inset(0% 0% 100% 0%);
+  transform: translate3d(0, 40%, 0);
+}
+[data-rv='mask'][data-rv-state='in'] {
+  clip-path: inset(0% 0% 0% 0%);
+}
+
+/* draw: rules, tracks and underlines drawing on from the left (or --rv-origin). */
+[data-rv='draw'] {
+  transform-origin: var(--rv-origin, 0% 50%);
+}
+[data-rv='draw'][data-rv-state='wait'] {
+  transform: scaleX(0);
+}
+
+/* pop: small chips and icons */
+[data-rv='pop'][data-rv-state='wait'] {
+  opacity: 0;
+  transform: translate3d(0, 0.5rem, 0) scale(0.82);
+}
+
+/* fade */
+[data-rv='fade'][data-rv-state='wait'] {
+  opacity: 0;
+}
+
+/* Motion paused (Standby / reduced motion), printing: everything simply visible. */
+:root[data-motion='paused'] [data-rv][data-rv-state],
+:root[data-motion='paused'] [data-rv-group] [data-rv][data-rv-state] {
+  opacity: 1;
+  transform: none;
+  clip-path: none;
+  filter: none;
+  transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion]) [data-rv][data-rv-state] {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    filter: none;
+    transition: none;
+  }
+}
+@media print {
+  [data-rv][data-rv-state] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    filter: none !important;
+  }
+}

@@ -9,7 +9,7 @@ import { RecDot } from '@/components/ui/rec-dot';
 import { Section } from '@/components/ui/section';
 import { SectionHeading } from '@/components/ui/section-heading';
 import { cn } from '@/lib/cn';
-import { ContactExportBar, ContactSheet } from './contact-sheet';
+import { ContactRow, ContactSheet } from './contact-sheet';
 
 const c = profile.copy.contact;
 const ROW = 'grid min-h-16 grid-cols-[1.25rem_1fr_auto] items-center gap-4 border-b border-hairline px-1 py-3 sm:px-3';
@@ -62,46 +62,52 @@ export function Contact() {
       <div className="page-grid">
         <div className="col-span-full lg:col-span-7">
           <SectionHeading id="contact" eyebrow={c.eyebrow} display={c.display} intro={c.intro} />
-          <p className="mt-6 flex max-w-lead items-baseline gap-3 text-lead text-paper">
+          <p data-rv="focus" data-rv-delay="200" className="mt-6 flex max-w-lead items-baseline gap-3 text-lead text-paper">
             <RecDot className="bg-amber shadow-glow-amber" />
             <span>{c.availability}</span>
           </p>
         </div>
       </div>
 
-      <div className="@container mt-(--stack)">
-        <p className="label-caps text-ash">{c.emailLabel}</p>
+      {/* Entrance (scroll reveal): the label fades up, the address wipes on like an edit, then the
+          copy button pops in once the address has mostly landed. */}
+      <div data-rv-group data-rv-step="120" className="@container mt-(--stack)">
+        <p data-rv="rise" data-rv-delay="150" className="label-caps text-ash">
+          {c.emailLabel}
+        </p>
         <div className="mt-3 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
-          <a
-            href={`mailto:${contact.email}`}
-            className="link-wipe wdth-110 min-w-0 font-semibold text-paper text-[clamp(1.25rem,6.4cqi,3.5rem)] leading-none [overflow-wrap:anywhere]"
-          >
-            {contact.email}
-          </a>
-          <CopyButton
-            size="md"
-            value={contact.email}
-            srSuffix={profile.copy.copyButton.emailSuffix}
-            announcement={profile.copy.copyButton.emailAnnouncement}
-            className="shrink-0"
-          />
+          {/* The wipe clips to this wrapper; its vertical padding keeps descenders inside the clip. */}
+          <div data-rv="wipe" data-rv-delay="150" className="-my-2 min-w-0 py-2">
+            <a
+              href={`mailto:${contact.email}`}
+              className="link-wipe wdth-110 block font-semibold text-paper text-[clamp(1.25rem,6.4cqi,3.5rem)] leading-none [overflow-wrap:anywhere]"
+            >
+              {contact.email}
+            </a>
+          </div>
+          <span data-rv="pop" data-rv-delay="560" className="flex shrink-0">
+            <CopyButton
+              size="md"
+              value={contact.email}
+              srSuffix={profile.copy.copyButton.emailSuffix}
+              announcement={profile.copy.copyButton.emailAnnouncement}
+            />
+          </span>
         </div>
       </div>
 
       <ContactSheet className="mt-(--stack) border-t border-hairline">
-        <li className="relative">
+        <ContactRow index={0}>
           <a href={contact.phone.href} className={LINK_ROW}>
             <RowBody icon={Phone} label={c.rows.phone} value={contact.phone.display} action={c.actions.call} />
           </a>
-          <ContactExportBar index={0} />
-        </li>
-        <li className="relative">
+        </ContactRow>
+        <ContactRow index={1}>
           <ExternalLink href={contact.whatsapp.href} showIcon={false} className={LINK_ROW}>
             <RowBody icon={WhatsAppIcon} label={c.rows.whatsapp} action={c.actions.whatsapp} />
           </ExternalLink>
-          <ContactExportBar index={1} />
-        </li>
-        <li className="relative">
+        </ContactRow>
+        <ContactRow index={2}>
           <ExternalLink href={contact.linkedin.href} showIcon={false} className={LINK_ROW}>
             <RowBody
               icon={LinkedInIcon}
@@ -115,15 +121,13 @@ export function Contact() {
               }
             />
           </ExternalLink>
-          <ContactExportBar index={2} />
-        </li>
-        <li className="relative">
+        </ContactRow>
+        <ContactRow index={3}>
           <div className={ROW}>
             <RowBody icon={MapPin} label={c.rows.location} value={location.display} />
           </div>
-          <ContactExportBar index={3} />
-        </li>
-        <li className="relative">
+        </ContactRow>
+        <ContactRow index={4}>
           <div className={ROW}>
             <RowBody
               icon={Languages}
@@ -143,12 +147,11 @@ export function Contact() {
               ))}
             />
           </div>
-          <ContactExportBar index={4} />
-        </li>
+        </ContactRow>
       </ContactSheet>
 
       {cv && (
-        <div className="mt-(--stack)">
+        <div data-rv="rise" className="mt-(--stack)">
           <LinkButton href={cv.href} download variant="secondary" icon={Download}>
             {cv.label}
           </LinkButton>

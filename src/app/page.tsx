@@ -9,6 +9,7 @@ import { Highlight } from '@/components/sections/highlight';
 import { Services } from '@/components/sections/services';
 import { Skills } from '@/components/sections/skills';
 import { Work } from '@/components/sections/work';
+import { ScrollReveal } from '@/components/ui/scroll-reveal';
 import { profile } from '@/content/profile';
 import { buildPersonJsonLd } from '@/lib/json-ld';
 import { resolvePhoto } from '@/lib/photo';
@@ -20,14 +21,16 @@ export default function Page() {
       <SiteHeader />
       <main id="main" tabIndex={-1}>
         <Hero />
-        <Work />
         <About />
         <Services />
+        <Work />
         <Skills />
         <Experience />
         <Highlight />
         <Education />
         <Contact />
+        {/* Entrance animations for every section ([data-rv] markers in the section components). */}
+        <ScrollReveal />
       </main>
       <SiteFooter />
       <script

@@ -71,6 +71,7 @@ export function About() {
               aspect="4 / 5"
               footerSize="sm"
               guides
+              crosshair={false}
               cropMarks
               grain
               footerStart={<Timecode frames={getSection('about').inFrame} />}

@@ -14,6 +14,8 @@ export type MonitorFrameProps = {
   footerEnd?: React.ReactNode;
   footerSize?: 'sm' | 'lg';
   guides?: boolean;
+  /** The centre cross of the guides (only with guides). Off where it would sit on a face. */
+  crosshair?: boolean;
   cropMarks?: boolean;
   grain?: boolean;
   vignette?: boolean;
@@ -35,6 +37,7 @@ export function MonitorFrame({
   footerEnd,
   footerSize = 'sm',
   guides = false,
+  crosshair = true,
   cropMarks = false,
   grain = false,
   vignette = false,
@@ -66,8 +69,12 @@ export function MonitorFrame({
         {guides && (
           <span aria-hidden="true" className="pointer-events-none absolute inset-0">
             <span className="absolute inset-[10%] border border-dashed border-rule" />
-            <span className="absolute top-1/2 left-1/2 h-px w-4 -translate-x-1/2 -translate-y-1/2 bg-rule" />
-            <span className="absolute top-1/2 left-1/2 h-4 w-px -translate-x-1/2 -translate-y-1/2 bg-rule" />
+            {crosshair && (
+              <>
+                <span className="absolute top-1/2 left-1/2 h-px w-4 -translate-x-1/2 -translate-y-1/2 bg-rule" />
+                <span className="absolute top-1/2 left-1/2 h-4 w-px -translate-x-1/2 -translate-y-1/2 bg-rule" />
+              </>
+            )}
           </span>
         )}
         {cropMarks && <span aria-hidden="true" className="corner-brackets pointer-events-none absolute inset-3" />}

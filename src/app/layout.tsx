@@ -4,6 +4,7 @@ import { ContentHotReload } from '@/components/dev/content-hot-reload';
 import { Preloader } from '@/components/preloader/preloader';
 import { Providers } from '@/components/ui/providers';
 import { profile } from '@/content/profile';
+import { EXTENSION_GUARD_SCRIPT } from '@/lib/extension-guard';
 import { MOTION_BOOT_SCRIPT } from '@/lib/motion-boot';
 import { SITE_URL } from '@/lib/site';
 import './globals.css';
@@ -59,6 +60,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       suppressHydrationWarning
     >
       <head>
+        {process.env.NODE_ENV === 'development' ? (
+          <script dangerouslySetInnerHTML={{ __html: EXTENSION_GUARD_SCRIPT }} />
+        ) : null}
         <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT_SCRIPT }} />
       </head>
       <body>

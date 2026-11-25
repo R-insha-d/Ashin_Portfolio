@@ -40,8 +40,13 @@
     }
   },
 
-  "// ==========  3. PHOTO  ==========": "Portrait for the About section. null = colour-bars placeholder. Put the image in public/images, then copy the example from section 9.",
-  "photo": null,
+  "// ==========  3. PHOTO  ==========": "Portrait for the About section. null = colour-bars placeholder. Put the image in public/images, then copy the example from section 9. \"avatar\" = a small square face crop for the logo at the top of the page (null = the AN initials).",
+  "photo": {
+    "src": "/images/profile/ashin.png",
+    "alt": "Portrait of Ashin N",
+    "focus": "50% 40%",
+    "avatar": "/images/profile/ashin-avatar.jpg"
+  },
 
   "// ==========  4. EXPERIENCE  ==========": "Jobs, newest first. \"dates\": {\"from\": 2025, \"to\": 2026} puts a job on the year ruler; \"dates\": null shows only its duration. \"tools\" = tool ids from section 6.",
   "roles": [
@@ -157,6 +162,13 @@
       "shortName": "Maya",
       "vendor": "Autodesk",
       "extensions": [".ma", ".mb"]
+    },
+    {
+      "id": "blender",
+      "name": "Blender",
+      "shortName": "Blender",
+      "vendor": "Blender Foundation",
+      "extensions": [".blend"]
     }
   ],
   "skillGroups": [
@@ -173,7 +185,7 @@
     {
       "id": "3d-modeling",
       "title": "3D modeling & animation",
-      "tools": ["3ds-max", "maya"]
+      "tools": ["3ds-max", "maya", "blender"]
     }
   ],
   "otherSkills": [
@@ -202,7 +214,7 @@
       "id": "3d",
       "title": "3D modeling & animation",
       "body": "I model and animate in 3D. I trained in 3D animation and VFX, and I have produced 3D visuals for individual and business clients.",
-      "tools": ["3ds-max", "maya"]
+      "tools": ["3ds-max", "maya", "blender"]
     },
     {
       "id": "graphic-design",
@@ -249,7 +261,8 @@
     "photo": {
       "src": "/images/ashin-portrait.jpg",
       "alt": "Portrait of Ashin N",
-      "focus": "50% 30%"
+      "focus": "50% 30%",
+      "avatar": "/images/ashin-avatar.jpg"
     },
     "project": {
       "id": "new-project",
@@ -457,7 +470,8 @@
         "Adobe Premiere Pro",
         "Adobe After Effects",
         "Autodesk Maya",
-        "Autodesk 3ds Max"
+        "Autodesk 3ds Max",
+        "Blender"
       ]
     },
     "a11y": {
@@ -549,7 +563,7 @@
       "eyebrow": "About",
       "display": { "lead": "Two crafts, one ", "cut": "timeline." },
       "paragraphs": [
-        "I’m a video editor and 3D artist with over 2 years of professional experience across media production, creative agencies and freelance projects. I work in video editing, motion graphics, graphic design and 3D modeling, using Adobe Creative Suite and Autodesk software.",
+        "I’m a video editor and 3D artist with over 2 years of professional experience across media production, creative agencies and freelance projects. I work in video editing, motion graphics, graphic design and 3D modeling, using Adobe Creative Suite, Autodesk software and Blender.",
         "I hold a Diploma in 3D Animation & VFX, and I’m looking for a role where I can apply my creative and technical skills to help a company meet its goals."
       ],
       "propertiesTitle": "Clip properties",
@@ -565,13 +579,13 @@
     "services": {
       "eyebrow": "What I do",
       "display": { "lead": "From brief to ", "cut": "final delivery." },
-      "intro": "I work across four crafts, in Adobe Creative Suite and Autodesk software.",
+      "intro": "I work across four crafts, in Adobe Creative Suite, Autodesk software and Blender.",
       "toolsLabel": "Tools"
     },
     "skills": {
       "eyebrow": "Toolkit",
-      "display": { "lead": "Six core tools, three ", "cut": "disciplines." },
-      "intro": "Adobe Creative Suite for editing, motion and design. Autodesk software for 3D modeling and animation.",
+      "display": { "lead": "Seven core tools, three ", "cut": "disciplines." },
+      "intro": "Adobe Creative Suite for editing, motion and design. Autodesk software and Blender for 3D modeling and animation.",
       "extensionsLabel": "Project files",
       "otherTitle": "Also in my kit"
     },

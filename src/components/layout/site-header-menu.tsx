@@ -48,7 +48,7 @@ export function SiteHeaderMenu({ active }: { active: SectionId }) {
       >
         <Container size="wide" className="flex min-h-full flex-col pb-8">
           <div className="flex h-(--header-h) shrink-0 items-center justify-between gap-4">
-            <span aria-hidden="true"><Monogram /></span>
+            <span aria-hidden="true"><Monogram photo={profile.photo?.avatar} /></span>
             <button type="button" onClick={close} className={toggleClass}>
               <X size={18} strokeWidth={1.5} aria-hidden />
               {copy.header.close}

@@ -91,6 +91,8 @@ export type Photo = {
   readonly alt: string;
   /** CSS object-position, for example '50% 30%'. */
   readonly focus?: string;
+  /** Small square face crop for the header monogram. Missing or null: the initials. */
+  readonly avatar?: PublicImagePath | null;
 };
 
 export type Captions = { readonly src: PublicMediaPath; readonly srcLang: string; readonly label: string };

@@ -163,7 +163,7 @@ export function SiteHeader() {
         <Container size="wide" className="flex h-full items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-3">
             <SectionLink to="top" aria-label={copy.header.homeLabel} className="flex shrink-0 items-center gap-3 rounded-clip">
-              <Monogram />
+              <Monogram photo={profile.photo?.avatar} />
               <span aria-hidden="true" className="hidden whitespace-nowrap text-small font-semibold uppercase wdth-125 text-paper sm:inline">
                 {profile.name}
               </span>
@@ -194,16 +194,16 @@ export function SiteHeader() {
             </ul>
           </nav>
 
-          <div className="flex shrink-0 items-center gap-3">
-            {/* Short HUD: 380–1023 */}
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            {/* Short HUD: 380–1023. Below 640 the Rec chip already shows a dot, and the room is needed. */}
             <span
               ref={(el) => { hudRefs.current[0] = el; }}
               aria-hidden="true"
               data-scrolling="false"
               className="hidden items-center gap-2 text-ash transition-colors duration-quick data-[scrolling=true]:text-amber xs:flex lg:hidden"
             >
-              <RecDot />
-              <span ref={(el) => { tcRefs.current[0] = el; }} className="tc tc-fixed">{ZERO}</span>
+              <RecDot className="max-sm:hidden" />
+              <span ref={(el) => { tcRefs.current[0] = el; }} className="tc tc-fixed max-sm:text-[0.75rem]">{ZERO}</span>
             </span>
 
             {/* Desktop HUD: ≥1280 */}
